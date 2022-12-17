@@ -7,14 +7,21 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { ValidEmail } from "./validate";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import {setUser} from '../features/appMili/appmiliSlice';
+import { useSelector } from 'react-redux';
 import { users } from "../db/db";
-import { Navigate, useNavigate } from "react-router-dom";
 
-export const Login = ({ setuser }) => {
+
+export const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
@@ -49,7 +56,7 @@ export const Login = ({ setuser }) => {
       if (userVerified) {
         console.log(userVerified);
         if(userVerified.rol == 'EMPLOYED'){
-          setuser(userVerified);
+          dispatch(setUser(userVerified))        
           navigate('/user');
         }else{
           if (userVerified.rol == 'ADMIN') {
@@ -117,6 +124,8 @@ export const Login = ({ setuser }) => {
   const isValidedForm = Object.keys(validatedForm).every(
     (key) => validatedForm[key] === ""
   );
+
+  
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center">
       <Box

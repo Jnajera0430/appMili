@@ -1,8 +1,11 @@
 import { Box, Button, Flex, Heading, Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { ValidEmail } from "./validate";
-
+import {setSignUp} from '../features/appMili/appmiliSlice'
 export const SingUp = () => {
+  const dispacth = useDispatch();
+  
   const [dataUser, setDataUser] = useState({
     firtsName: "",
     lastName: "",
@@ -75,22 +78,27 @@ export const SingUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const firtsName = e.target.firtsName.value;
-    const lastName = e.target.lastName.value;
+    const nombre = e.target.firtsName.value;
+    const Apellidos = e.target.lastName.value;
     const email = e.target.email.value;
-    const tipoId = e.target.selectTipoCedula.value;
+    const TipoDocumento = e.target.selectTipoCedula.value;
     const numCedula = e.target.numCedula.value;
-    const password = e.target.password.value;
-    setDataUser({
-      firtsName,
-      lastName,
+    const Contraseña = e.target.password.value;
+   
+    dispacth(setSignUp({
+      nombre,
+      Apellidos,
       email,
-      tipoId,
+      TipoDocumento,
+      Telefono:null,
+      Edad:null,
+      sexo: null,
       numCedula,
-      password,
+      Contraseña,
       estado: true,
-      rol: "EMPLOYED",
-    });
+      rol: "EMPLOYE",
+    }));
+
   };
   useEffect(() => {
     if (dataUser.password.length >= 0) {
