@@ -1,0 +1,29 @@
+.form-group {
+  display: flex;
+  gap: 10px;
+  border: 1px solid #000;
+  flex-direction: column;
+  padding: 20px;
+}
+.form-group-complet{
+    display: flex;
+    gap: 30px;
+
+
+}
+.items{
+    display: flex;
+    flex-direction: column;
+}
+input{
+    border: 1px solid #000;
+}
+.button{
+    width:100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+body{
+    background-color: #fff
+}

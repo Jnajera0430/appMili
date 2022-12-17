@@ -1,0 +1,21 @@
+p{
+    text-align: center;
+}
+.delete{
+    color: #e80e0a;
+    font-size: 20px;
+    
+}
+.delete:hover{
+    color: #B90E0A;
+    
+}
+.acceptar-solicitud{
+    color: rgb(2, 179, 64);
+}
+.acceptar-solicitud:hover{
+    color: rgb(4, 114, 42);
+}
+hr{
+    border-bottom: 1px solid #000;
+}

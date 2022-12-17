@@ -11,8 +11,10 @@ import { useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { ValidEmail } from "./validate";
 import { users } from "../db/db";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Login = ({ setuser }) => {
+  const navigate = useNavigate();
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
@@ -45,7 +47,16 @@ export const Login = ({ setuser }) => {
     if (user.length > 0) {
       const userVerified = validLoginUser(user,password);
       if (userVerified) {
-        setuser(userVerified)
+        console.log(userVerified);
+        if(userVerified.rol == 'EMPLOYED'){
+          setuser(userVerified);
+          navigate('/user');
+        }else{
+          if (userVerified.rol == 'ADMIN') {
+            setuser(userVerified);
+            navigate('/admin');
+          }
+        }
       }else{
         setValidatedForm(
           {
