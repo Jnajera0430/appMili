@@ -2,10 +2,10 @@ import { Box, Button, Flex, Heading, Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ValidEmail } from "./validate";
-import {setSignUp} from '../features/appMili/appmiliSlice'
+import { setSignUp } from "../features/appMili/appmiliSlice";
 export const SingUp = () => {
   const dispacth = useDispatch();
-  
+
   const [dataUser, setDataUser] = useState({
     firtsName: "",
     lastName: "",
@@ -23,19 +23,19 @@ export const SingUp = () => {
     password: undefined,
     passwordCheck: undefined,
   });
- 
+
   const handleChange = (e) => {
     e.preventDefault();
     if (e.target.name === "firtsName") {
       setValidateForm({
         ...validateForm,
-        firtsName: e.target.value.length > 0 ? "" : "Value Required",
+        firtsName: e.target.value.length > 0 ? "" : "Value is Required",
       });
     }
     if (e.target.name === "lastName") {
       setValidateForm({
         ...validateForm,
-        lastName: e.target.value.length > 0 ? "" : "Value Required",
+        lastName: e.target.value.length > 0 ? "" : "Value is Required",
       });
     }
     if (e.target.name === "email") {
@@ -43,7 +43,7 @@ export const SingUp = () => {
         ...validateForm,
         email:
           e.target.value.length === 0
-            ? "Value Required"
+            ? "Value is Required"
             : ValidEmail(e.target.value)
             ? ""
             : "Email invalided",
@@ -52,13 +52,13 @@ export const SingUp = () => {
     if (e.target.name === "selectTipoCedula") {
       setValidateForm({
         ...validateForm,
-        tipoId: e.target.value.length === 0 ? "Value Required" : "",
+        tipoId: e.target.value.length === 0 ? "Value is Required" : "",
       });
     }
     if (e.target.name === "numCedula") {
       setValidateForm({
         ...validateForm,
-        numCedula: e.target.value.length === 0 ? "Value Required" : "",
+        numCedula: e.target.value.length === 0 ? "Value is Required" : "",
       });
     }
     if (e.target.name === "password") {
@@ -68,12 +68,12 @@ export const SingUp = () => {
       });
     }
     if (e.target.name === "checkPassword") {
-       
-        setValidateForm({
-          ...validateForm,
-          passwordCheck: e.target.value !== dataUser.password ? 'Password does not match':''
-        });
-      }
+      setValidateForm({
+        ...validateForm,
+        passwordCheck:
+          e.target.value !== dataUser.password ? "Password does not match" : "",
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -84,21 +84,22 @@ export const SingUp = () => {
     const TipoDocumento = e.target.selectTipoCedula.value;
     const numCedula = e.target.numCedula.value;
     const Contraseña = e.target.password.value;
-   
-    dispacth(setSignUp({
-      nombre,
-      Apellidos,
-      email,
-      TipoDocumento,
-      Telefono:null,
-      Edad:null,
-      sexo: null,
-      numCedula,
-      Contraseña,
-      estado: true,
-      rol: "EMPLOYE",
-    }));
 
+    dispacth(
+      setSignUp({
+        nombre,
+        Apellidos,
+        email,
+        TipoDocumento,
+        Telefono: null,
+        Edad: null,
+        sexo: null,
+        numCedula,
+        Contraseña,
+        estado: true,
+        rol: "EMPLOYE",
+      })
+    );
   };
   useEffect(() => {
     if (dataUser.password.length >= 0) {
@@ -125,11 +126,8 @@ export const SingUp = () => {
       justifyContent="center"
       alignItems="center"
       width="100vw"
-      gap={5}
+      gap={0.2}
     >
-      <Heading width="100%" textAlign="center">
-        SIGN UP
-      </Heading>
       <form
         style={{
           width: "100%",
@@ -140,33 +138,42 @@ export const SingUp = () => {
         id="form"
       >
         <Flex
-          width="50%"
+          width="20%"
           direction="column"
-          gap={5}
+          gap={4}
           justifyContent="center"
           alignItems="center"
         >
+          <Heading width="100%" textAlign="center">
+            SIGN UP
+          </Heading>
           <Input
             placeholder="Firts Name"
             name="firtsName"
             type="text"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.firtsName}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.firtsName}
+          </Box>
           <Input
             placeholder="Last Name"
             name="lastName"
             type="text"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.lastName}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.lastName}
+          </Box>
           <Input
             placeholder="Email"
             name="email"
             type="email"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.email}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.email}
+          </Box>
           <Select
             name="selectTipoCedula"
             placeholder="Tipo de identificacion"
@@ -175,28 +182,36 @@ export const SingUp = () => {
             <option value="cedula de Ciudania">Cedula de Ciudania</option>
             <option value="cedula de Extrangeria">Cedula de Extrangeria</option>
           </Select>
-          <Box color='red.300' width='100%' pl={5}  h='10px'>{validateForm.tipoId}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.tipoId}
+          </Box>
           <Input
             placeholder="Num. de cedula"
             name="numCedula"
             type="number"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.numCedula}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.numCedula}
+          </Box>
           <Input
             placeholder="Password"
             name="password"
             type="password"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.password}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.password}
+          </Box>
           <Input
             placeholder="Check password"
             name="checkPassword"
             type="password"
             onChange={handleChange}
           />
-          <Box color='red.300' width='100%' pl={5} h='10px'>{validateForm.passwordCheck}</Box>
+          <Box color="red.300" width="100%" pl={5} h="0.5px">
+            {validateForm.passwordCheck}
+          </Box>
           <Button disabled={!isValidedForm} type="submit" width="7rem">
             Sing Up
           </Button>

@@ -1,26 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { users } from "../../db/db";
 
-const initialState = [
-  {
-    id: "1",
-    title: "un titulo",
-    description: "una describcion",
-    estado: false,
-  },
-  {
-    id: "2",
-    title: "un titulo 2",
-    description: "una descripcion 2",
-    estado: false,
-  },
-  {
-    id: "3",
-    title: "un titulo",
-    description: "una descripcion 3",
-    estado: false,
-  },
-];
 
 export const appMiliSlice = createSlice({
   name: "appMili",
@@ -32,15 +12,24 @@ export const appMiliSlice = createSlice({
 
     setUser: (state, action) => {
       localStorage.clear();
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      const tokenUser = {
+        email:action.payload.email,
+        rol: action.payload.rol
+      }
+      localStorage.setItem("user", JSON.stringify(tokenUser));
     },
 
     getUserIsAllowed: (state, action) => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      action.payload = { email: user.email, rol: user.rol };
-      return action.payload;
+      const tokenUser = localStorage.getItem("user");
+      const user = JSON.parse(tokenUser);
+      action.payload = user;
+      return user;
     },
-
+    setLogoutUser:(state,action)=>{
+      localStorage.clear();
+      window.location.reload();
+      return;
+    },
     setSignUp: async (state, action) => {
         
         try {
@@ -57,8 +46,26 @@ export const appMiliSlice = createSlice({
             console.log(error);        
         }
     },
+
+    getUser: async(state,action)=>{
+      try {
+        console.log(action.payload);
+        const typeUser = {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: action.payload,
+        };
+        const result= await fetch("http://localhost:8000/api/users",typeUser)  
+        action.payload= await result.json();
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+
   },
 });
 
-export const { addTask, setUser, getUserIsAllowed,setSignUp } = appMiliSlice.actions;
+export const { addTask, setUser, getUserIsAllowed,setSignUp,getUser,setLogoutUser } = appMiliSlice.actions;
 export default appMiliSlice.reducer;

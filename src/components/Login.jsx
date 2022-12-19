@@ -1,4 +1,5 @@
 import {
+  background,
   Box,
   Button,
   Flex,
@@ -7,13 +8,12 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { ValidEmail } from "./validate";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import {setUser} from '../features/appMili/appmiliSlice';
-import { useSelector } from 'react-redux';
+import {setUser,getUser} from '../features/appMili/appmiliSlice';
 import { users } from "../db/db";
 
 
@@ -38,7 +38,7 @@ export const Login = () => {
     userPass: undefined,
   });
 
-  const validLoginUser =(user, password)=>user.find(userPass => userPass.password == password);
+  const validLoginUser =(user, password)=>user.find(userPass => userPass.password === password);
 
 
   const handleSubmit = (e) => {
@@ -50,17 +50,18 @@ export const Login = () => {
       password,
     });
     const user = users.filter((user) => user.email == email);
+    const user2 = dispatch(getUser('juan@gmail.com'));
+    console.log(user2);
     
     if (user.length > 0) {
       const userVerified = validLoginUser(user,password);
       if (userVerified) {
-        console.log(userVerified);
-        if(userVerified.rol == 'EMPLOYED'){
+        if(userVerified.rol === 'EMPLOYED'){
           dispatch(setUser(userVerified))        
-          navigate('/user');
+          navigate('/user');        
         }else{
-          if (userVerified.rol == 'ADMIN') {
-            setuser(userVerified);
+          if (userVerified.rol === 'ADMIN') {
+            dispatch(setUser(userVerified));
             navigate('/admin');
           }
         }
@@ -147,6 +148,8 @@ export const Login = () => {
               variant="filled"
               background={inputBackground}
               onChange={onChangeForm}
+              autoComplete='on'
+              autoFocus
             />
             <Box h={0.5} color="red.300">
               {validatedForm.email}
@@ -155,14 +158,17 @@ export const Login = () => {
               direction="row"
               width="100%"
               height="100%"
-              background="white"
               rounded={5}
               justifyContent="center"
               alignItems="center"
+              background={inputBackground}
+              _hover={{background:'gray.200'}}
+              _focusWithin={{borderColor:'#3182ce',border:'2px solid #3182ce',background:'gray.100'}}
+              _active={{background:'gray.200'}}
             >
               <Input
                 placeholder="*********"
-                onChange={(e) => {
+                onChange={(e) => {  
                   onChangePassword(e);
                   onChangeForm(e);
                 }}
@@ -170,16 +176,24 @@ export const Login = () => {
                 type={seePassword ? "text" : "password"}
                 variant="filled"
                 background={inputBackground}
-                width="100%"
+                width="80%"
+                autoComplete="on"
+                border='none'
+                _hover={{background:'gray.200'}}
+                rounded='none'
+                _focusWithin={{background:'gray.200'}}
+
               />
-              <Box width="20px">
+              <Box width='20%' >
                 {seePassword === null ? (
                   ""
                 ) : (
                   <Button
-                    background="white"
                     width="100%"
                     onClick={handleSeePassword}
+                    background='gray.200'
+                    _hover={{bg:'white'}}
+                    rounded='none'
                   >
                     <AiOutlineEye />
                   </Button>
