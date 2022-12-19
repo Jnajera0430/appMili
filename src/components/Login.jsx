@@ -50,7 +50,7 @@ export const Login = () => {
       password,
     });
     const user = users.filter((user) => user.email == email);
-    const user2 = dispatch(getUser('juan@gmail.com'));
+    const user2 = dispatch(getUser({email}));
     console.log(user2);
     
     if (user.length > 0) {

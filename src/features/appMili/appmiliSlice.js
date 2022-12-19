@@ -53,10 +53,11 @@ export const appMiliSlice = createSlice({
         const typeUser = {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: action.payload,
+          body: JSON.stringify(action.payload),
         };
         const result= await fetch("http://localhost:8000/api/users",typeUser)  
         action.payload= await result.json();
+        return state;
         
       } catch (error) {
         console.log(error);
