@@ -82,7 +82,7 @@ export const SingUp = () => {
     const Apellidos = e.target.lastName.value;
     const email = e.target.email.value;
     const TipoDocumento = e.target.selectTipoCedula.value;
-    const numCedula = e.target.numCedula.value;
+    const NumCedula = e.target.numCedula.value;
     const Contraseña = e.target.password.value;
 
     dispacth(
@@ -94,7 +94,7 @@ export const SingUp = () => {
         Telefono: null,
         Edad: null,
         sexo: null,
-        numCedula,
+        NumCedula,
         Contraseña,
         estado: true,
         rol: "EMPLOYE",

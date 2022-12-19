@@ -39,12 +39,12 @@ function App() {
       </Box>
       <Box height='90vh'>
         <Routes >
-          <Route element={<RouteProtectedIsLogin isAllowed={!!user.email }  redirectTo={user.rol =='EMPLOYED'?'/user':'/admin'} />}>
+          <Route element={<RouteProtectedIsLogin isAllowed={!!user.email }  redirectTo={user.rol =='EMPLOYE'?'/user':'/admin'} />}>
               <Route index element={<Login />}/>
               <Route path='/login' element={<Login/>}/>
               <Route path='/signup' element={<SingUp/>}/>
           </Route> 
-            <Route  element={<ProtectedRoute isAllowed={!!user.email && user.rol =='EMPLOYED'} redirectTo='/'/>}  >
+            <Route  element={<ProtectedRoute isAllowed={!!user.email && user.rol =='EMPLOYE'} redirectTo='/'/>}  >
               <Route path='/user' element={<Form/>}/>
             </Route>
             <Route element={<ProtectedRoute isAllowed={!!user.email  && user.rol =='ADMIN'} redirectTo='/'/>}  >

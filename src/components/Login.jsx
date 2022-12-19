@@ -25,7 +25,6 @@ export const Login = () => {
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
-
   const [userLogin, setUserLogin] = useState({
     email:'',
     password:''
@@ -38,31 +37,46 @@ export const Login = () => {
     userPass: undefined,
   });
 
-  const validLoginUser =(user, password)=>user.find(userPass => userPass.password === password);
+  const validLoginUser =(user, password)=>user.find(userPass => userPass.Contraseña == password);
+  const getUser = (email)=>{
+    try {
+      const typeUser = {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(email),
+      };
+      let result = fetch("http://localhost:8000/api/users",typeUser)  
+              .then(reponse => reponse.json())   
+              .then(dato =>dato);  
+      return result;                                                   
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    
     const email = e.target.email.value;
     const password = e.target.password.value;
     setUserLogin({
       email,
       password,
     });
-    const user = users.filter((user) => user.email == email);
-    const user2 = dispatch(getUser({email}));
-    console.log(user2);
-    
-    if (user.length > 0) {
-      const userVerified = validLoginUser(user,password);
+    const result = await getUser({email});
+    if (result) {      
+      const userVerified = validLoginUser(result,password);
       if (userVerified) {
-        if(userVerified.rol === 'EMPLOYED'){
+
+        if(userVerified.rol === 'EMPLOYE'){
           dispatch(setUser(userVerified))        
           navigate('/user');        
+          window.location.reload();
         }else{
           if (userVerified.rol === 'ADMIN') {
             dispatch(setUser(userVerified));
             navigate('/admin');
+            window.location.reload();
           }
         }
       }else{
@@ -74,6 +88,7 @@ export const Login = () => {
         );
       }
     } else {
+      e.preventDefault();
       setValidatedForm(
         {
           ...validatedForm,

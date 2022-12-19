@@ -25,11 +25,13 @@ export const appMiliSlice = createSlice({
       action.payload = user;
       return user;
     },
+
     setLogoutUser:(state,action)=>{
       localStorage.clear();
       window.location.reload();
       return;
     },
+
     setSignUp: async (state, action) => {
         
         try {
@@ -49,15 +51,15 @@ export const appMiliSlice = createSlice({
 
     getUser: async(state,action)=>{
       try {
-        console.log(action.payload);
         const typeUser = {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(action.payload),
         };
         const result= await fetch("http://localhost:8000/api/users",typeUser)  
-        action.payload= await result.json();
-        return state;
+                              .then(reponse => reponse.json());                              
+        action.payload = result;
+        return Object.assign({},result)
         
       } catch (error) {
         console.log(error);
