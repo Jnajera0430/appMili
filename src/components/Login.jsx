@@ -72,6 +72,7 @@ export const Login = () => {
           dispatch(setUser(userVerified))        
           navigate('/user');        
           window.location.reload();
+
         }else{
           if (userVerified.rol === 'ADMIN') {
             dispatch(setUser(userVerified));

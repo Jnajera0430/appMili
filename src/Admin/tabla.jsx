@@ -1,8 +1,10 @@
 import { Button, Td, Tr } from "@chakra-ui/react";
 import React from "react";
 import { MdDelete, MdTaskAlt } from 'react-icons/md';
-export default function Tabla({ solicitud }) {
+export default function Tabla({ solicitud, deleteID, aprobarState }) {
   const{user}=solicitud;
+
+
   return (
     <Tr > 
       <Td>{user.nombre}</Td>
@@ -20,10 +22,10 @@ export default function Tabla({ solicitud }) {
       <Td display={"flex"}>
 
         <Button type="submit">
-        <MdTaskAlt className="acceptar-solicitud"/>
+        <MdTaskAlt className="acceptar-solicitud" onClick={()=> aprobarState(solicitud.estado)} />
         </Button>
-        <Button type="submit">
-          <MdDelete className="delete"/>
+        <Button type="submit" onClick={() => deleteID(solicitud.id)}>
+          <MdDelete className="delete" />
         </Button>
         
       </Td>

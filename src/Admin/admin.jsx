@@ -23,12 +23,35 @@ export default function Admin() {
 
     const dataSoli =  await fetch('http://localhost:8000/api/unionU_S');
     const user = await dataSoli.json();
-    console.log(user);
     setSolicitado(user);
   }
   useEffect(() => {
     Solicitud()
   },[])
+
+  const deleteID = async (deleteID) => {
+    
+    try {
+
+      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`,{method: 'DELETE'} );
+      alert("solicitud eliminada")
+      
+    } catch (error) {
+      console.log(error);
+    }
+    /* setSolicitado(solicitado.filter((solicitado) => solicitado.id !== deleteID)); */
+    
+  };
+  const aprobarState = async (aprobarState) =>{
+    try {
+  
+      await fetch(`http://localhost:8000/api/solicitudes/${aprobarState}`,{method: 'PUT'} );
+      alert("estado actualizado")
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <Box height={"95vh"}  p="10px" justifyContent="center" alignItems="center">
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" >
@@ -58,7 +81,8 @@ export default function Admin() {
           <Tbody>
             {
               solicitado.map(solicitud=>{
-                return <Tabla key={solicitud.id} solicitud={solicitud}/>
+                
+                return <Tabla key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} aprobarState={aprobarState}/>
               })
             }
           </Tbody>

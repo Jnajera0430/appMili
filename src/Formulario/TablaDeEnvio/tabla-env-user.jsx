@@ -22,13 +22,6 @@ const TablaEnvUser = () => {
             
             <Thead>
               <Tr>
-                <Th textAlign="center">Nombre</Th>
-                <Th textAlign="center">Email</Th>
-                <Th textAlign="center">Apellidos</Th>
-                <Th textAlign="center">C.C</Th>
-                <Th textAlign="center">Telefono</Th>
-                <Th textAlign="center">Edad</Th>
-                <Th textAlign="center">Sexo</Th>
                 <Th textAlign="center">Nombre Empresa</Th>
                 <Th textAlign="center">Nit Empresa</Th>
                 <Th textAlign="center">Estadia en Empresa</Th>
