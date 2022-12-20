@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { MdDelete, MdTaskAlt } from "react-icons/md";
 import Celdas from "./celdas";
-export const TablaEnvUser = ({solicitado, deleteID}) => {
+export const TablaEnvUser = ({solicitado, deleteID, funcionSolicitud ,idUser}) => {
   
   return (
     <Box p="10px" justifyContent="center" alignItems="center">
@@ -40,7 +40,7 @@ export const TablaEnvUser = ({solicitado, deleteID}) => {
             {
               solicitado.map(solicitud=>{
                 
-                return <Celdas key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} /* aprobarState={aprobarState} *//>
+                return <Celdas key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} funcionSolicitud={funcionSolicitud} idUser={idUser}/* aprobarState={aprobarState} *//>
               })
             }
             </Tbody>
