@@ -7,20 +7,73 @@ import { Solicitud } from "../DatosEmpresa/solicitud";
 import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
 import "./forms.css";
 import { SingUp } from "../../components/SingUp";
-const options = [
-  
-  { value: 'F', label: 'F' },
-]
-
+const options = [{ value: "F", label: "F" }];
 
 function Form() {
-
   const dispatch = useDispatch();
-  const [user,setUser] = useState([])
-  const [datos,setdatos] = useState({})
+  const [solicitado, setSolicitado] = useState([])
+  const [user, setUser] = useState([]);
+  const [datos, setdatos] = useState({});
+  const [validaDatos, setValidaDatos] = useState({
+    Telefono: undefined,
+    Edad: undefined,
+    sexo: undefined,
+  });
+  const handleChange = (e) => {
+    
+    setdatos({ ...datos, [e.target.name]: e.target.value });
+    if (
+      e.target.name == "Telefono" ||
+      e.target.name == "Edad" ||
+      e.target.name == "sexo"
+      ) {
+        /* console.log(e.target.value == 0 ? "vacio " : "lleno"); */
+      setValidaDatos({
+        ...validaDatos,
+        [e.target.name]: e.target.value.length > 0 ? "" : "value is required",
+      });
+    }
+    
+  };
 
-  console.log(datos);
+  const solicitud = async(idUser)=>{
+    
+    const request = {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    }
+    let result = await fetch(`http://localhost:8000/api/solicitudes/${idUser}`,request)
+        .then(response => response.json())
+        .then(data => data);
+    setSolicitado(result)
+  }
+
+  const handleSubmitUser = (e) => {
+    e.preventDefault();
+    const users = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    };
+    fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
+    alert("datos guardados");
+    solicitud(user.idUser)
+  };
+  const deleteID = async (deleteID) => {
+    try {
+      
+      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`,{method: 'DELETE'} );
+      alert("solicitud eliminada")
+      solicitud(user.idUser)
+      
+    } catch (error) {
+      console.log(error);
+    }
+    
+  };
+
   useEffect(() => {
+    solicitud(user.idUser);
     const objs = dispatch(getUserIsAllowed());
     const requesInit = {
       method: "PATCH",
@@ -32,29 +85,18 @@ function Form() {
       .then((res) => setUser(res[0]))
       .catch((err) => err.json);
   }, []);
-
-  const handleChange =(e)=>{
-    setdatos({...datos,[e.target.name]:e.target.value})
-  }
-
-  const handleSubmitUser =(e)=>{
-    e.preventDefault();
-    const users = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos),
-    };
-      fetch(`http://localhost:8000/api/users/${user.idUser}`,users);
-      alert('datos guardados');
-      
-  }
+  useEffect(() => {
+    solicitud(user.idUser);
+    
+  }, [user]);
   return (
-    <Box width="100%" height="95vh" display="flex" flexDirection="column">
+    <>
+    <Box width="100%"  display="flex" flexDirection="column" justifyContent={"center"} alignItems="center">
       <header>
-        <h1>SOLICITUD DE PRESTAMO</h1>
+        <h1><b>SOLICITUD DE PRESTAMO</b></h1>
       </header>
       <Box>
-        Datos Personales
+      <h1><b>DATOS PERSONALES</b></h1>
         <form onSubmit={handleSubmitUser}>
           <div className="form-group">
             <div className="form-group-complet">
@@ -103,7 +145,7 @@ function Form() {
             </div>
 
             <div className="form-group-complet">
-            <div className="items">
+              <div className="items">
                 <label>Tipo de documento </label>
                 <Input
                   name="email"
@@ -113,19 +155,20 @@ function Form() {
                   color="black"
                 />
               </div>
-            <div className="items">
+              <div className="items">
                 <label>Telefono </label>
                 <Input
-                  name="email"
+                  name="Telefono"
                   type="number"
                   borderColor="teal"
                   color="teal"
                   placeholder="Telefono"
                   _placeholder={{ color: "inherit" }}
-                  defaultValue={user.Telefono ? user.Telefono:''}
+                  defaultValue={user.Telefono ? user.Telefono : ""}
                   disabled={user.Telefono ? true : false}
                   onChange={handleChange}
                 />
+                <span>{validaDatos.Telefono}</span>
               </div>
 
               <div className="items">
@@ -137,10 +180,12 @@ function Form() {
                   color="teal"
                   placeholder="Edad"
                   _placeholder={{ color: "inherit" }}
-                  defaultValue={user.Edad ? user.Edad : ''}
+                  defaultValue={user.Edad ? user.Edad : ""}
                   disabled={user.Edad ? true : false}
                   onChange={handleChange}
                 />
+                <span>{validaDatos.Edad}</span>
+
               </div>
 
               <div className="items">
@@ -149,9 +194,9 @@ function Form() {
                   name="sexo"
                   borderColor="teal"
                   color="teal"
-                  placeholder={user.sexo ? user.sexo:'Seleccionar'}
+                  placeholder={user.sexo ? user.sexo : "Seleccionar"}
                   _placeholder={{ color: "inherit" }}
-                  defaultValue={user.sexo ? user.sexo:''}
+                  defaultValue={user.sexo ? user.sexo : ""}
                   disabled={user.sexo ? true : false}
                   options={options}
                   onChange={handleChange}
@@ -159,6 +204,8 @@ function Form() {
                   <option value="M">M</option>
                   <option value="F">F</option>
                 </Select>
+                <span>{validaDatos.sexo}</span>
+
               </div>
             </div>
           </div>
@@ -166,10 +213,12 @@ function Form() {
       </Box>
       <br />
       <Box>
-        <Solicitud handleSubmitUser={handleSubmitUser}/>
+        <Solicitud handleSubmitUser={handleSubmitUser} />
       </Box>
-      <TablaEnvUser />
     </Box>
+      <TablaEnvUser solicitado={solicitado} deleteID={deleteID}/>
+    <br></br> 
+    </>
   );
 }
 

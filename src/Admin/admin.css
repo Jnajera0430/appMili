@@ -1,6 +1,14 @@
 p{
     text-align: center;
 }
+.error{
+    color: #bcb633;
+}
+.edit{
+    color: rgb(92, 174, 237);
+    font-size: 20px;
+    
+}
 .delete{
     color: #e80e0a;
     font-size: 20px;

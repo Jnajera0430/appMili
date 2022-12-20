@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-    Table,
-    TableContainer,
-    Button,
-    Box,
-  } from "@chakra-ui/react";
-const TablaEnvUser = () => {
-    return (
-        <Box height={"95vh"}  p="10px" justifyContent="center" alignItems="center">
-        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" >
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  Table,
+  TableContainer,
+  Button,
+  Box,
+} from "@chakra-ui/react";
+import { MdDelete, MdTaskAlt } from "react-icons/md";
+import Celdas from "./celdas";
+export const TablaEnvUser = ({solicitado, deleteID}) => {
   
+  return (
+    <Box p="10px" justifyContent="center" alignItems="center">
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
         <TableContainer border="1px solid black">
-        <p>Tus solicitudes</p>
-        <hr/>
-          <Table size="sm" >
-            
+          <p>Tus solicitudes</p>
+          <hr />
+          <Table size="sm">
             <Thead>
               <Tr>
                 <Th textAlign="center">Nombre Empresa</Th>
@@ -31,18 +37,18 @@ const TablaEnvUser = () => {
               </Tr>
             </Thead>
             <Tbody>
-{/*               {
-                solicitudes.map(solicitud=>{
-                  console.log(solicitud.estado);
-                  return <Tabla key={solicitud.id} solicitud={solicitud}/>
-                })
-              } */}
+            {
+              solicitado.map(solicitud=>{
+                
+                return <Celdas key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} /* aprobarState={aprobarState} *//>
+              })
+            }
             </Tbody>
           </Table>
         </TableContainer>
-              </Box>
       </Box>
-    );
-}
+    </Box>
+  );
+};
 
 export default TablaEnvUser;

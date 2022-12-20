@@ -36,7 +36,7 @@ export const Login = () => {
     password: undefined,
     userPass: undefined,
   });
-
+  
   const validLoginUser =(user, password)=>user.find(userPass => userPass.Contraseña == password);
   const getUser = (email)=>{
     try {
@@ -64,7 +64,8 @@ export const Login = () => {
       password,
     });
     const result = await getUser({email});
-    if (result) {      
+    
+    if (result[0]) {      
       const userVerified = validLoginUser(result,password);
       if (userVerified) {
 

@@ -4,27 +4,45 @@ import { useDispatch } from "react-redux";
 
 import { getUserIsAllowed } from "../../features/appMili/appmiliSlice";
 
-export const Solicitud = ({handleSubmitUser}) => {
+export const Solicitud = ({ handleSubmitUser }) => {
   const dispatch = useDispatch();
-  const [book, setBook] = useState();
+  const [input, setInput] = useState();
   const [user, setuser] = useState({});
+  const [validaDatos, setValidaDatos] = useState({
+    NombreEmpresa: undefined,
+    nitEmpresa: undefined,
+    EstadiaEnEmpresa: undefined,
+    fecha: undefined,
+    Monto: undefined,
+  });
   const handleChange = (e) => {
-    /* e.preventDefault(); */
-    setBook({
-      ...book,
+    e.preventDefault();
+    setInput({
+      ...input,
       [e.target.name]: e.target.value,
       iduser: user[0].idUser,
     });
+
+    if (
+      e.target.name == "NombreEmpresa" ||
+      e.target.name == "nitEmpresa" ||
+      e.target.name == "EstadiaEnEmpresa" ||
+      e.target.name == "Monto" ||
+      e.target.name == "fecha"
+    ) {
+      setValidaDatos({
+        ...validaDatos,
+        [e.target.name]: e.target.value.length > 0 ? "" : "Value is required",
+      });
+    }
   };
   const handleSubmit = (e) => {
-    /* e.preventDefault(); */
-    console.log(book);
-
+    e.preventDefault();
     //consulta
     const requesInit = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(book),
+      body: JSON.stringify(input),
     };
 
     fetch("http://localhost:8000/api/solicitudes", requesInit)
@@ -44,13 +62,21 @@ export const Solicitud = ({handleSubmitUser}) => {
       .catch((err) => err.json);
   }, []);
 
+  const isValidedForm = Object.keys(validaDatos).every(
+    (key) => validaDatos[key] === ""
+  );
+
   return (
     <Box width="auto">
-      <form onSubmit={(e)=>{
-        handleSubmit(e);
-        handleSubmitUser(e);
-        
-        }}>
+           <header>
+        <h1><b>SOLICITUD DE PRESTAMO</b></h1>
+      </header>
+      <form
+        onSubmit={(e) => {
+          handleSubmit(e);
+          handleSubmitUser(e);
+        }}
+      >
         <div className="form-group">
           <div className="form-group-complet">
             <div className="items">
@@ -62,9 +88,10 @@ export const Solicitud = ({handleSubmitUser}) => {
                 color="black"
                 placeholder="Nombre de la empresa"
                 _placeholder={{ color: "inherit" }}
+                
               />
+              <span role="alert"><b>{validaDatos.NombreEmpresa}</b></span>
             </div>
-
             <div className="items">
               <label>Nit </label>
               <Input
@@ -76,6 +103,7 @@ export const Solicitud = ({handleSubmitUser}) => {
                 placeholder="Nit"
                 _placeholder={{ color: "inherit" }}
               />
+              <span role="alert"><b>{validaDatos.nitEmpresa}</b></span>
             </div>
             <div className="items">
               <label>Estancia en la empresa </label>
@@ -87,9 +115,22 @@ export const Solicitud = ({handleSubmitUser}) => {
                 placeholder="Estancia en la empresa"
                 _placeholder={{ color: "inherit" }}
               />
+              <span role="alert"><b>{validaDatos.EstadiaEnEmpresa}</b></span>
+            </div>
+            <div className="items">
+              <label>Monto </label>
+              <Input
+                onChange={handleChange}
+                name="Monto"
+                type="number"
+                borderColor="teal"
+                color="black"
+                placeholder="Monto"
+                _placeholder={{ color: "inherit" }}
+              />
+              <span role="alert"><b>{validaDatos.Monto}</b></span>
             </div>
           </div>
-
           <div className="form-group-complet">
             <div className="items">
               <label>Fecha </label>
@@ -102,27 +143,19 @@ export const Solicitud = ({handleSubmitUser}) => {
                 placeholder="Estancia en la empresa"
                 _placeholder={{ color: "inherit" }}
               />
+            <span role="alert"><b>{validaDatos.fecha}</b></span>
             </div>
-
-            <div className="items">
-              <label>Monto </label>
-              <Input
-                onChange={handleChange}
-                name="Monto"
-                type="number"
-                borderColor="teal"
-                color="black"
-                placeholder="Monto"
-                _placeholder={{ color: "inherit" }}
-              />
-            </div>
+         
             <div className="items">
               <label>Suber tu documento</label>
-              <input type="file" /* name="archivosubido"  */ />
+              <input type="file" />
             </div>
           </div>
           <div className="button">
-            <Button colorScheme="green" type="submit" >
+            <Button
+              colorScheme="green"
+              type="submit" disabled={!isValidedForm} 
+            >
               Solicitar
             </Button>
           </div>

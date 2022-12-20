@@ -33,7 +33,6 @@ export const appMiliSlice = createSlice({
     },
 
     setSignUp: async (state, action) => {
-        console.log(action.payload);
         try {
           const users = {
             method: "POST",
