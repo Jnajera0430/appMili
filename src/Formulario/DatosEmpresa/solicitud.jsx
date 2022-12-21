@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { getUserIsAllowed } from "../../features/appMili/appmiliSlice";
 
-export const Solicitud = ({ handleSubmitUser }) => {
+export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
   const dispatch = useDispatch();
   const [input, setInput] = useState();
   const [user, setuser] = useState({});
@@ -48,9 +48,13 @@ export const Solicitud = ({ handleSubmitUser }) => {
     };
 
     fetch("http://localhost:8000/api/solicitudes", requesInit)
-      .then((response) => response.json())
-      .catch((err) => err.json);
+    .then((response) => response.json())
+    .catch((err) => err.json);
+
+
+    downloadDocument();
     e.target.reset();
+    window.location.reload(); 
   };
   useEffect(() => {
     const objs = dispatch(getUserIsAllowed());

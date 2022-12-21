@@ -15,22 +15,21 @@ import Tabla from "./tabla";
 
 export default function Admin() {
   const [solicitado, setSolicitado] = useState([]);
-
   const Solicitud = async () => {
     const dataSoli = await fetch("http://localhost:8000/api/unionU_S");
     const user = await dataSoli.json();
     setSolicitado(user);
   };
+
   useEffect(() => {
     Solicitud();
   }, []);
-  
 
   const deleteID = async (deleteID) => {
     try {
       await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, {
         method: "DELETE",
-      });     
+      });
       alert("solicitud eliminada");
       Solicitud();
     } catch (error) {
@@ -82,6 +81,7 @@ export default function Admin() {
                 <Th textAlign="center">Estadia en Empresa</Th>
                 <Th textAlign="center">Monto</Th>
                 <Th textAlign="center">Estado</Th>
+                <Th textAlign="center">Documento</Th>
                 <Th textAlign="center">Acciones</Th>
               </Tr>
             </Thead>

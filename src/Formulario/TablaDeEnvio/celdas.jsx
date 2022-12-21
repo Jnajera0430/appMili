@@ -75,7 +75,12 @@ export default function Celdas({
                   name="Monto"
                 />
               </Td>
-              <Td>{solicitud.estado ? <>Aprobado</> : <> No aprobado</>}</Td>
+              <Td
+                textAlign="center"
+                color={solicitud.estado ? "green.300" : "red.300"}
+              >
+                {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
+              </Td>
               <Td
                 display={"flex"}
                 gap={2}

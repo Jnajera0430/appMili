@@ -20,6 +20,7 @@ import { Solicitud } from "../DatosEmpresa/solicitud";
 import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
 import "./forms.css";
 import { SingUp } from "../../components/SingUp";
+import { AiOutlineCloudDownload } from "react-icons/ai";
 const options = [{ value: "F", label: "F" }];
 
 function Form() {
@@ -28,25 +29,34 @@ function Form() {
   const [solicitado, setSolicitado] = useState([]);
   const [user, setUser] = useState([]);
   const [datos, setdatos] = useState({});
-  const [viculo,setVinculo] = useState({
-    link: null
+  const [viculo, setVinculo] = useState({
+    link: null,
   });
   const [fileUser, setFileUser] = useState({});
   const [validaDatos, setValidaDatos] = useState({
     Telefono: undefined,
     Edad: undefined,
     sexo: undefined,
+    userFile: undefined
   });
-  console.log(viculo);
   const handleChangeFile = (e) => {
-    setFileUser(e.target.files[0]);
+    console.log(viculo);
+    setFileUser(e.target.files[0])
+    
+      setValidaDatos({
+        ...validaDatos,
+        userFile: validaDatos.userFile !== undefined ? 'value is required':e.target.value.length == 0 ? 'value is required': ''
+      });        
+
+    
+    
   };
   const handleChange = (e) => {
     setdatos({ ...datos, [e.target.name]: e.target.value });
     if (
       e.target.name == "Telefono" ||
       e.target.name == "Edad" ||
-      e.target.name == "sexo"
+      e.target.name == "sexo" 
     ) {
       /* console.log(e.target.value == 0 ? "vacio " : "lleno"); */
       setValidaDatos({
@@ -54,6 +64,18 @@ function Form() {
         [e.target.name]: e.target.value.length > 0 ? "" : "value is required",
       });
     }
+  };
+  const downloadDocument = async () => {
+    const requestDocument = {
+      method: "GET",
+    };
+
+    await fetch(
+      `http://localhost:8000/api/index/${user.idUser}`,
+      requestDocument
+    )
+      .then((response) => response.json())
+      .then((data) => setVinculo(data));
   };
 
   const solicitud = async (idUser) => {
@@ -70,7 +92,7 @@ function Form() {
     setSolicitado(result);
   };
 
-  const handleSubmitUser = (e) => {
+  const handleSubmitUser = async(e) => {
     e.preventDefault();
     const users = {
       method: "PUT",
@@ -78,19 +100,19 @@ function Form() {
       body: JSON.stringify(datos),
     };
     fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
-    alert("datos guardados");
     solicitud(user.idUser);
     const formdata = new FormData();
     formdata.append("file", fileUser);
-
+    
     const requestFile = {
       method: "POST",
       body: formdata,
     };
     fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
-      .then((response) => response.json())
-      .catch((err) => err.json);
-
+    .then((response) => response.json())
+    .catch((err) => err.json);
+    
+    alert("datos guardados");
     e.target.reset();
   };
   const deleteID = async (deleteID) => {
@@ -104,19 +126,10 @@ function Form() {
       console.log(error);
     }
   };
-  const downloadDocument = async()=>{
-    const requestDocument = {
-      method:'GET',
-    }
-
-   await fetch(`http://localhost:8000/api/index/${user.idUser}`,requestDocument)
-                          .then(response => response.json())
-                          .then(data => setVinculo(data));
-    
-    
-  }
+  
 
   useEffect(() => {
+    
     solicitud(user.idUser);
     const objs = dispatch(getUserIsAllowed());
     const requesInit = {
@@ -129,8 +142,9 @@ function Form() {
       .then((res) => setUser(res[0]))
       .catch((err) => err.json);
   }, []);
+
   useEffect(() => {
-    downloadDocument()
+    downloadDocument();
     solicitud(user.idUser);
   }, [user]);
   return (
@@ -264,21 +278,28 @@ function Form() {
                         <label>Descarga tu documento</label>
                         {user.img ? (
                           <>
-                            {
-                              viculo.link?(
-                                <>  
-                                <a href={viculo.link} >Document</a>
-                                </>
-                              ):(
-                                <>
-                                <Button onClick={()=>downloadDocument()}>{user.img}</Button>                                
-                                </>
-                              )
-                            }
+                            {viculo.link ? (
+                              <>
+                              <Box display={"flex"} justifyContent="center">
+
+                                <Button>
+                                  <a href={viculo.link}>
+                                    <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>{/*  hola */}
+                                  </a>
+                                </Button>
+                              </Box>
+                              </>
+                            ) : (
+                              <>
+                                <Button onClick={() => downloadDocument()}>
+                                  {user.img}
+                                </Button>
+                              </>
+                            )}
                           </>
                         ) : (
                           <>
-                          <label>Suber tu documento</label>
+                            <label>Suber tu documento</label>
                             <Input
                               type="file"
                               borderColor="teal"
@@ -286,6 +307,7 @@ function Form() {
                               onChange={(e) => handleChangeFile(e)}
                               accept="pdf/png"
                             />
+                            <span role="alert"><b>{validaDatos.userFile}</b></span>
                           </>
                         )}
                       </div>
@@ -295,7 +317,7 @@ function Form() {
               </Box>
               <br />
               <Box>
-                <Solicitud handleSubmitUser={handleSubmitUser} />
+                <Solicitud handleSubmitUser={handleSubmitUser} downloadDocument={downloadDocument}/>
               </Box>
             </Box>
           </ModalBody>
