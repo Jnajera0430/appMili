@@ -69,7 +69,7 @@ export const Solicitud = ({ handleSubmitUser }) => {
   return (
     <Box width="auto">
            <header>
-        <h1><b>SOLICITUD DE PRESTAMO</b></h1>
+        <h1><b>REQUERMIENTOS DE PRESTAMO</b></h1>
       </header>
       <form
         onSubmit={(e) => {

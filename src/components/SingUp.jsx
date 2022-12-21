@@ -5,7 +5,6 @@ import { ValidEmail } from "./validate";
 import { setSignUp } from "../features/appMili/appmiliSlice";
 export const SingUp = () => {
   const dispacth = useDispatch();
-
   const [dataUser, setDataUser] = useState({
     firtsName: "",
     lastName: "",
@@ -26,6 +25,7 @@ export const SingUp = () => {
 
   const handleChange = (e) => {
     e.preventDefault();
+
     if (e.target.name === "firtsName") {
       setValidateForm({
         ...validateForm,
@@ -100,6 +100,7 @@ export const SingUp = () => {
         rol: "EMPLOYE",
       })
     );
+    e.target.reset();
   };
   useEffect(() => {
     if (dataUser.password.length >= 0) {
@@ -133,20 +134,16 @@ export const SingUp = () => {
           width: "100%",
           display: "flex",
           justifyContent: "center",
+          flexDirection: "column",
+          maxWidth: "500px",
         }}
         onSubmit={handleSubmit}
         id="form"
       >
-        <Flex
-          width="20%"
-          direction="column"
-          gap={4}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Heading width="100%" textAlign="center">
-            SIGN UP
-          </Heading>
+        <Heading width="100%" textAlign="center">
+          SIGN UP
+        </Heading>
+        <Flex direction='column' padding={20} gap={4}>
           <Input
             placeholder="Firts Name"
             name="firtsName"

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
   Table,
   TableContainer,
-  Button,
   Box,
 } from "@chakra-ui/react";
-import { MdDelete, MdTaskAlt } from "react-icons/md";
 import Celdas from "./celdas";
 export const TablaEnvUser = ({solicitado, deleteID, funcionSolicitud ,idUser}) => {
   
@@ -21,8 +18,9 @@ export const TablaEnvUser = ({solicitado, deleteID, funcionSolicitud ,idUser}) =
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
+        
       >
-        <TableContainer border="1px solid black">
+        <TableContainer border="1px solid black" w={"80%"} >
           <p>Tus solicitudes</p>
           <hr />
           <Table size="sm">
@@ -38,9 +36,9 @@ export const TablaEnvUser = ({solicitado, deleteID, funcionSolicitud ,idUser}) =
             </Thead>
             <Tbody>
             {
-              solicitado.map(solicitud=>{
+              solicitado.map((solicitud,_,arrSolicitud)=>{
                 
-                return <Celdas key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} funcionSolicitud={funcionSolicitud} idUser={idUser}/* aprobarState={aprobarState} *//>
+                return <Celdas key={solicitud.id} solicitud={solicitud}  deleteID={deleteID} funcionSolicitud={funcionSolicitud} arrSolicitud={arrSolicitud} idUser={idUser}/>
               })
             }
             </Tbody>
