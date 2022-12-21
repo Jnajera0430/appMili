@@ -8,7 +8,7 @@ export default function Celdas({
   deleteID,
   funcionSolicitud,
   idUser,
-  arrSolicitud
+  arrSolicitud,
 }) {
   console.log();
   const [formEdit, setFormEdit] = useState(false);
@@ -42,7 +42,7 @@ export default function Celdas({
     setFormEdit(false);
   };
   return (
-    <Tr >
+    <Tr>
       {arrSolicitud ? (
         <>
           {formEdit ? (
@@ -68,7 +68,7 @@ export default function Celdas({
                   name="EstadiaEnEmpresa"
                 />
               </Td>
-              <Td >
+              <Td>
                 <Input
                   defaultValue={solicitud.Monto}
                   onChange={handleInputChange}
@@ -76,7 +76,12 @@ export default function Celdas({
                 />
               </Td>
               <Td>{solicitud.estado ? <>Aprobado</> : <> No aprobado</>}</Td>
-              <Td display={"flex"} gap={2} justifyContent="center" alignContent={"center"}>
+              <Td
+                display={"flex"}
+                gap={2}
+                justifyContent="center"
+                alignContent={"center"}
+              >
                 <Button
                   type="submit"
                   onClick={() => handleEditSolicitud(solicitud.id)}
@@ -99,7 +104,12 @@ export default function Celdas({
               <Td textAlign="center">{solicitud.nitEmpresa}</Td>
               <Td textAlign="center">{solicitud.EstadiaEnEmpresa}</Td>
               <Td textAlign="center">{solicitud.Monto}</Td>
-              <Td textAlign="center">{solicitud.estado ? <>Aprobado</> : <> No aprobado</>}</Td>
+              <Td
+                textAlign="center"
+                color={solicitud.estado ? "green.300" : "red.300"}
+              >
+                {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
+              </Td>
               <Td display={"flex"} gap={2} justifyContent="center">
                 <Button type="submit" onClick={handleButtonEdit}>
                   <FiEdit className="acceptar-solicitud" />

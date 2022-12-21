@@ -1,4 +1,16 @@
-import { Box, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Select, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -11,16 +23,24 @@ import { SingUp } from "../../components/SingUp";
 const options = [{ value: "F", label: "F" }];
 
 function Form() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
   const [solicitado, setSolicitado] = useState([]);
   const [user, setUser] = useState([]);
   const [datos, setdatos] = useState({});
+  const [viculo,setVinculo] = useState({
+    link: null
+  });
+  const [fileUser, setFileUser] = useState({});
   const [validaDatos, setValidaDatos] = useState({
     Telefono: undefined,
     Edad: undefined,
     sexo: undefined,
   });
+  console.log(viculo);
+  const handleChangeFile = (e) => {
+    setFileUser(e.target.files[0]);
+  };
   const handleChange = (e) => {
     setdatos({ ...datos, [e.target.name]: e.target.value });
     if (
@@ -60,6 +80,17 @@ function Form() {
     fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
     alert("datos guardados");
     solicitud(user.idUser);
+    const formdata = new FormData();
+    formdata.append("file", fileUser);
+
+    const requestFile = {
+      method: "POST",
+      body: formdata,
+    };
+    fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
+      .then((response) => response.json())
+      .catch((err) => err.json);
+
     e.target.reset();
   };
   const deleteID = async (deleteID) => {
@@ -73,6 +104,17 @@ function Form() {
       console.log(error);
     }
   };
+  const downloadDocument = async()=>{
+    const requestDocument = {
+      method:'GET',
+    }
+
+   await fetch(`http://localhost:8000/api/index/${user.idUser}`,requestDocument)
+                          .then(response => response.json())
+                          .then(data => setVinculo(data));
+    
+    
+  }
 
   useEffect(() => {
     solicitud(user.idUser);
@@ -88,147 +130,183 @@ function Form() {
       .catch((err) => err.json);
   }, []);
   useEffect(() => {
+    downloadDocument()
     solicitud(user.idUser);
   }, [user]);
   return (
     <>
-    <Box display={"flex"} w="80%" justifyContent={"flex-end"}>
-
-    <Button onClick={onOpen} colorScheme='green'>SOLICITAR PRESTAMO</Button>
-    </Box>
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay max-width="none" display="flex" alignItems="center" />
-      <ModalContent width="auto" maxWidth="none">
-        <ModalBody>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent={"center"}
-            alignItems="center"
-            p="15px"
-          >
-            <ModalHeader>SOLICITUD DE PRESTAMO</ModalHeader>
-            <ModalCloseButton />
-            <Box>
-              <h1>
-                <b>DATOS PERSONALES</b>
-              </h1>
-              <form onSubmit={handleSubmitUser}>
-                <div className="form-group">
-                  <div className="form-group-complet">
-                    <div className="items">
-                      <label>Nombre(s) </label>
-                      <Input
-                        name="NumCedula"
-                        disabled
-                        defaultValue={user.nombre}
-                        borderColor="teal"
-                        color="black"
-                      />
+      <Box display={"flex"} w="80%" justifyContent={"flex-end"}>
+        <Button onClick={onOpen} colorScheme="green">
+          SOLICITAR PRESTAMO
+        </Button>
+      </Box>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay max-width="none" display="flex" alignItems="center" />
+        <ModalContent width="auto" maxWidth="none">
+          <ModalBody>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent={"center"}
+              alignItems="center"
+              p="15px"
+            >
+              <ModalHeader>SOLICITUD DE PRESTAMO</ModalHeader>
+              <ModalCloseButton />
+              <Box>
+                <h1>
+                  <b>DATOS PERSONALES</b>
+                </h1>
+                <form onSubmit={handleSubmitUser}>
+                  <div className="form-group">
+                    <div className="form-group-complet">
+                      <div className="items">
+                        <label>Nombre(s) </label>
+                        <Input
+                          name="NumCedula"
+                          disabled
+                          defaultValue={user.nombre}
+                          borderColor="teal"
+                          color="black"
+                        />
+                      </div>
+                      <div className="items">
+                        <label>Apellidos </label>
+                        <Input
+                          name="Apellidos"
+                          disabled
+                          defaultValue={user.Apellidos}
+                          borderColor="teal"
+                          color="black"
+                        />
+                      </div>
+                      <div className="items">
+                        <label>Cedula </label>
+                        <Input
+                          name="NumCedula"
+                          disabled
+                          defaultValue={user.NumCedula}
+                          borderColor="teal"
+                          color="black"
+                        />
+                      </div>
+                      <div className="items">
+                        <label>Email </label>
+                        <Input
+                          name="email"
+                          disabled
+                          defaultValue={user.email}
+                          borderColor="teal"
+                          color="black"
+                        />
+                      </div>
                     </div>
-                    <div className="items">
-                      <label>Apellidos </label>
-                      <Input
-                        name="Apellidos"
-                        disabled
-                        defaultValue={user.Apellidos}
-                        borderColor="teal"
-                        color="black"
-                      />
-                    </div>
-                    <div className="items">
-                      <label>Cedula </label>
-                      <Input
-                        name="NumCedula"
-                        disabled
-                        defaultValue={user.NumCedula}
-                        borderColor="teal"
-                        color="black"
-                      />
-                    </div>
-                    <div className="items">
-                      <label>Email </label>
-                      <Input
-                        name="email"
-                        disabled
-                        defaultValue={user.email}
-                        borderColor="teal"
-                        color="black"
-                      />
+                    <div className="form-group-complet">
+                      <div className="items">
+                        <label>Tipo de documento </label>
+                        <Input
+                          name="email"
+                          disabled
+                          defaultValue={user.TipoDocumento}
+                          borderColor="teal"
+                          color="black"
+                        />
+                      </div>
+                      <div className="items">
+                        <label>Telefono </label>
+                        <Input
+                          name="Telefono"
+                          type="number"
+                          borderColor="teal"
+                          color="teal"
+                          placeholder="Telefono"
+                          _placeholder={{ color: "inherit" }}
+                          defaultValue={user.Telefono ? user.Telefono : ""}
+                          disabled={user.Telefono ? true : false}
+                          onChange={handleChange}
+                        />
+                        <span>{validaDatos.Telefono}</span>
+                      </div>
+                      <div className="items">
+                        <label>Edad </label>
+                        <Input
+                          name="Edad"
+                          type="number"
+                          borderColor="teal"
+                          color="teal"
+                          placeholder="Edad"
+                          _placeholder={{ color: "inherit" }}
+                          defaultValue={user.Edad ? user.Edad : ""}
+                          disabled={user.Edad ? true : false}
+                          onChange={handleChange}
+                        />
+                        <span>{validaDatos.Edad}</span>
+                      </div>
+                      <div className="items">
+                        <label>Sexo </label>
+                        <Select
+                          name="sexo"
+                          borderColor="teal"
+                          color="teal"
+                          placeholder={user.sexo ? user.sexo : "Seleccionar"}
+                          _placeholder={{ color: "inherit" }}
+                          defaultValue={user.sexo ? user.sexo : ""}
+                          disabled={user.sexo ? true : false}
+                          options={options}
+                          onChange={handleChange}
+                        >
+                          <option value="M">M</option>
+                          <option value="F">F</option>
+                        </Select>
+                        <span>{validaDatos.sexo}</span>
+                      </div>
+                      <div className="items">
+                        <label>Descarga tu documento</label>
+                        {user.img ? (
+                          <>
+                            {
+                              viculo.link?(
+                                <>  
+                                <a href={viculo.link} >Document</a>
+                                </>
+                              ):(
+                                <>
+                                <Button onClick={()=>downloadDocument()}>{user.img}</Button>                                
+                                </>
+                              )
+                            }
+                          </>
+                        ) : (
+                          <>
+                          <label>Suber tu documento</label>
+                            <Input
+                              type="file"
+                              borderColor="teal"
+                              name="userFile"
+                              onChange={(e) => handleChangeFile(e)}
+                              accept="pdf/png"
+                            />
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="form-group-complet">
-                    <div className="items">
-                      <label>Tipo de documento </label>
-                      <Input
-                        name="email"
-                        disabled
-                        defaultValue={user.TipoDocumento}
-                        borderColor="teal"
-                        color="black"
-                      />
-                    </div>
-                    <div className="items">
-                      <label>Telefono </label>
-                      <Input
-                        name="Telefono"
-                        type="number"
-                        borderColor="teal"
-                        color="teal"
-                        placeholder="Telefono"
-                        _placeholder={{ color: "inherit" }}
-                        defaultValue={user.Telefono ? user.Telefono : ""}
-                        disabled={user.Telefono ? true : false}
-                        onChange={handleChange}
-                      />
-                      <span>{validaDatos.Telefono}</span>
-                    </div>
-                    <div className="items">
-                      <label>Edad </label>
-                      <Input
-                        name="Edad"
-                        type="number"
-                        borderColor="teal"
-                        color="teal"
-                        placeholder="Edad"
-                        _placeholder={{ color: "inherit" }}
-                        defaultValue={user.Edad ? user.Edad : ""}
-                        disabled={user.Edad ? true : false}
-                        onChange={handleChange}
-                      />
-                      <span>{validaDatos.Edad}</span>
-                    </div>
-                    <div className="items">
-                      <label>Sexo </label>
-                      <Select
-                        name="sexo"
-                        borderColor="teal"
-                        color="teal"
-                        placeholder={user.sexo ? user.sexo : "Seleccionar"}
-                        _placeholder={{ color: "inherit" }}
-                        defaultValue={user.sexo ? user.sexo : ""}
-                        disabled={user.sexo ? true : false}
-                        options={options}
-                        onChange={handleChange}
-                      >
-                        <option value="M">M</option>
-                        <option value="F">F</option>
-                      </Select>
-                      <span>{validaDatos.sexo}</span>
-                    </div>
-                  </div>
-                </div>
-              </form>
+                </form>
+              </Box>
+              <br />
+              <Box>
+                <Solicitud handleSubmitUser={handleSubmitUser} />
+              </Box>
             </Box>
-            <br />
-            <Box>
-              <Solicitud handleSubmitUser={handleSubmitUser} />
-            </Box>
-          </Box>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-      <TablaEnvUser solicitado={solicitado} deleteID={deleteID} funcionSolicitud={solicitud} idUser={user.idUser} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+      <TablaEnvUser
+        solicitado={solicitado}
+        deleteID={deleteID}
+        funcionSolicitud={solicitud}
+        idUser={user.idUser}
+      />
     </>
   );
 }

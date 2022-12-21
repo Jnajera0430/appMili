@@ -56,10 +56,10 @@ export const appMiliSlice = createSlice({
           body: JSON.stringify(action.payload),
         };
         const result= await fetch("http://localhost:8000/api/users",typeUser)  
-                              .then(reponse => reponse.json());                              
+                              .then(reponse => reponse.json())
+                              .then(data => data);                              
         action.payload = result;
-        return Object.assign({},result)
-        
+        return result 
       } catch (error) {
         console.log(error);
       }

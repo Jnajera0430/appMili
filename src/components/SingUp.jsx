@@ -1,10 +1,11 @@
-import { Box, Button, Flex, Heading, Input, Select } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Select, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ValidEmail } from "./validate";
 import { setSignUp } from "../features/appMili/appmiliSlice";
 export const SingUp = () => {
   const dispacth = useDispatch();
+  const inputBackground = useColorModeValue("white", "gray.600");
   const [dataUser, setDataUser] = useState({
     firtsName: "",
     lastName: "",
@@ -123,7 +124,7 @@ export const SingUp = () => {
   return (
     <Flex
       direction="column"
-      height="100vh"
+      height="80vh"
       justifyContent="center"
       alignItems="center"
       width="100vw"
@@ -136,81 +137,103 @@ export const SingUp = () => {
           justifyContent: "center",
           flexDirection: "column",
           maxWidth: "500px",
+          
         }}
         onSubmit={handleSubmit}
         id="form"
       >
-        <Heading width="100%" textAlign="center">
-          SIGN UP
-        </Heading>
-        <Flex direction='column' padding={20} gap={4}>
-          <Input
-            placeholder="Firts Name"
-            name="firtsName"
-            type="text"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.firtsName}
+        <Flex direction='column' padding={20} gap={5} background='gray.200'>
+          <Heading width="100%" textAlign="center">
+            SIGN UP
+          </Heading>
+          <Box >
+            <Input
+              placeholder="Firts Name"
+              name="firtsName"
+              type="text"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.firtsName}
+            </span>
           </Box>
-          <Input
-            placeholder="Last Name"
-            name="lastName"
-            type="text"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.lastName}
+          <Box>
+            <Input
+              placeholder="Last Name"
+              name="lastName"
+              type="text"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.lastName}
+            </span>
           </Box>
-          <Input
-            placeholder="Email"
-            name="email"
-            type="email"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.email}
+          <Box>
+            <Input
+              placeholder="Email"
+              name="email"
+              type="email"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.email}
+            </span>
           </Box>
-          <Select
-            name="selectTipoCedula"
-            placeholder="Tipo de identificacion"
-            onChange={handleChange}
-          >
-            <option value="cedula de Ciudania">Cedula de Ciudania</option>
-            <option value="cedula de Extrangeria">Cedula de Extrangeria</option>
-          </Select>
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.tipoId}
+          <Box>
+            <Select
+              name="selectTipoCedula"
+              placeholder="Tipo de identificacion"
+              onChange={handleChange}
+              background={inputBackground}
+            >
+              <option value="cedula de Ciudania">Cedula de Ciudania</option>
+              <option value="cedula de Extrangeria">Cedula de Extrangeria</option>
+            </Select>
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.tipoId}
+            </span>
           </Box>
-          <Input
-            placeholder="Num. de cedula"
-            name="numCedula"
-            type="number"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.numCedula}
+          <Box>
+            <Input
+              placeholder="Num. de cedula"
+              name="numCedula"
+              type="number"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.numCedula}
+            </span>
           </Box>
-          <Input
-            placeholder="Password"
-            name="password"
-            type="password"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.password}
+          <Box>
+            <Input
+              placeholder="Password"
+              name="password"
+              type="password"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.password}
+            </span>
           </Box>
-          <Input
-            placeholder="Check password"
-            name="checkPassword"
-            type="password"
-            onChange={handleChange}
-          />
-          <Box color="red.300" width="100%" pl={5} h="0.5px">
-            {validateForm.passwordCheck}
+          <Box>
+            <Input
+              placeholder="Check password"
+              name="checkPassword"
+              type="password"
+              onChange={handleChange}
+              background={inputBackground}
+            />
+            <span color="red.300" width="100%" pl={5} role={'alert'}>
+              {validateForm.passwordCheck}
+            </span>
           </Box>
-          <Button disabled={!isValidedForm} type="submit" width="7rem">
-            Sing Up
+          <Button disabled={!isValidedForm} type="submit" width="7rem" colorScheme="teal">
+            Sign Up
           </Button>
         </Flex>
       </form>

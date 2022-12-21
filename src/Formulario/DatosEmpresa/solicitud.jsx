@@ -8,6 +8,7 @@ export const Solicitud = ({ handleSubmitUser }) => {
   const dispatch = useDispatch();
   const [input, setInput] = useState();
   const [user, setuser] = useState({});
+  
   const [validaDatos, setValidaDatos] = useState({
     NombreEmpresa: undefined,
     nitEmpresa: undefined,
@@ -15,6 +16,7 @@ export const Solicitud = ({ handleSubmitUser }) => {
     fecha: undefined,
     Monto: undefined,
   });
+
   const handleChange = (e) => {
     e.preventDefault();
     setInput({
@@ -48,6 +50,7 @@ export const Solicitud = ({ handleSubmitUser }) => {
     fetch("http://localhost:8000/api/solicitudes", requesInit)
       .then((response) => response.json())
       .catch((err) => err.json);
+    e.target.reset();
   };
   useEffect(() => {
     const objs = dispatch(getUserIsAllowed());
@@ -146,10 +149,7 @@ export const Solicitud = ({ handleSubmitUser }) => {
             <span role="alert"><b>{validaDatos.fecha}</b></span>
             </div>
          
-            <div className="items">
-              <label>Suber tu documento</label>
-              <input type="file" />
-            </div>
+         
           </div>
           <div className="button">
             <Button
