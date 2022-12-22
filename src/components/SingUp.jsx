@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ValidEmail } from "./validate";
 import { setSignUp } from "../features/appMili/appmiliSlice";
+import { useCreateUserMutation } from "../features/appMiliQuery/apiSliceQuery";
 export const SingUp = () => {
+  const [createUser]=useCreateUserMutation()
   const dispacth = useDispatch();
   const inputBackground = useColorModeValue("white", "gray.600");
   const [dataUser, setDataUser] = useState({
@@ -86,7 +88,7 @@ export const SingUp = () => {
     const NumCedula = e.target.numCedula.value;
     const Contraseña = e.target.password.value;
 
-    dispacth(
+    /* dispacth(
       setSignUp({
         nombre,
         Apellidos,
@@ -100,7 +102,20 @@ export const SingUp = () => {
         estado: true,
         rol: "EMPLOYE",
       })
-    );
+    ); */
+    createUser({
+      nombre,
+      Apellidos,
+      email,
+      TipoDocumento,
+      Telefono: null,
+      Edad: null,
+      sexo: null,
+      NumCedula,
+      Contraseña,
+      estado: true,
+      rol: "EMPLOYE",
+    })
     e.target.reset();
   };
   useEffect(() => {

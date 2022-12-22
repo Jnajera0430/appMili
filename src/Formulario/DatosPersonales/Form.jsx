@@ -329,33 +329,37 @@ function Form() {
                             <Box
                               display={"flex"}
                               justifyContent="center"
+                              flexDirection={"column"}
                               alignItems="center"
                               gap={"10px"}
+                              w="80%"
                             >
-                              <Box>
                                 <label>Añade tu documento</label>
+                              <Box border={"1px solid"} display="flex" borderRadius={"5px"} alignItems="center" justifyContent={"center"}>
                                 <Input
+                                w={"80%"}
                                   type="file"
                                   borderColor="teal"
                                   name="userFile"
                                   onChange={(e) => handleChangeFile(e)}
                                   accept="pdf/png"
                                   id='fileUser'
+                                  border={"none"}
                                 />
-                              </Box>
                               {fileUser ? (
                                 <Button
-                                  top="10px"
-                                  bg="transparent"
-                                  borderRadius="100px"
-                                  onClick={()=>inputFile.value = ''}
+                                /* top="10px" */
+                                bg="transparent"
+                                borderRadius="100px"
+                                onClick={()=>inputFile.value = ''}
                                 >
                                   <VscError color="red" fontSize={"22px"} />
                                 </Button>
                               ) : (
                                 ""
-                              )}
+                                )}
                             </Box>
+                                </Box>
                             <span role="alert">
                               <>{validaDatos.userFile}</>
                             </span>
