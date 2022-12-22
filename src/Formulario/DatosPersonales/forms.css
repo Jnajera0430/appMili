@@ -11,6 +11,12 @@
 
 
 }
+.form-group-completado{
+    display: flex;
+    gap: 72px;
+
+
+}
 .items{
     display: flex;
     flex-direction: column;

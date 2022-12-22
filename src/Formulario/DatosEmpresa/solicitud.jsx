@@ -85,7 +85,7 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
         }}
       >
         <div className="form-group">
-          <div className="form-group-complet">
+          <div className="form-group-completado">
             <div className="items">
               <label>Nombre de la empresa </label>
               <Input

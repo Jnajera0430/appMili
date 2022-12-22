@@ -19,11 +19,12 @@ import { Solicitud } from "../DatosEmpresa/solicitud";
 
 import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
 import "./forms.css";
-import { SingUp } from "../../components/SingUp";
 import { AiOutlineCloudDownload } from "react-icons/ai";
+import { VscError } from "react-icons/vsc";
 const options = [{ value: "F", label: "F" }];
 
 function Form() {
+  const inputFile = document.getElementById('fileUser')
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
   const [solicitado, setSolicitado] = useState([]);
@@ -32,31 +33,32 @@ function Form() {
   const [viculo, setVinculo] = useState({
     link: null,
   });
-  const [fileUser, setFileUser] = useState({});
+  const [fileUser, setFileUser] = useState(null);
   const [validaDatos, setValidaDatos] = useState({
     Telefono: undefined,
     Edad: undefined,
     sexo: undefined,
-    userFile: undefined
+    userFile: undefined,
   });
   const handleChangeFile = (e) => {
-    console.log(viculo);
-    setFileUser(e.target.files[0])
-    
-      setValidaDatos({
-        ...validaDatos,
-        userFile: validaDatos.userFile !== undefined ? 'value is required':e.target.value.length == 0 ? 'value is required': ''
-      });        
+    setFileUser(e.target.files[0]);
 
-    
-    
+    setValidaDatos({
+      ...validaDatos,
+      userFile:
+        validaDatos.userFile !== undefined
+          ? "value is required"
+          : e.target.value.length == 0
+          ? "value is required"
+          : "",
+    });
   };
   const handleChange = (e) => {
     setdatos({ ...datos, [e.target.name]: e.target.value });
     if (
       e.target.name == "Telefono" ||
       e.target.name == "Edad" ||
-      e.target.name == "sexo" 
+      e.target.name == "sexo"
     ) {
       /* console.log(e.target.value == 0 ? "vacio " : "lleno"); */
       setValidaDatos({
@@ -92,7 +94,7 @@ function Form() {
     setSolicitado(result);
   };
 
-  const handleSubmitUser = async(e) => {
+  const handleSubmitUser = async (e) => {
     e.preventDefault();
     const users = {
       method: "PUT",
@@ -103,18 +105,33 @@ function Form() {
     solicitud(user.idUser);
     const formdata = new FormData();
     formdata.append("file", fileUser);
-    
+
     const requestFile = {
       method: "POST",
       body: formdata,
     };
     fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
-    .then((response) => response.json())
-    .catch((err) => err.json);
-    
+      .then((response) => response.json())
+      .catch((err) => err.json);
+
     alert("datos guardados");
     e.target.reset();
   };
+
+  const handleDeleteDocument = async (idUser) => {
+    console.log(idUser);
+    try {
+      await fetch(`http://localhost:8000/api/index/${idUser}`, {
+        method: "DELETE",
+      });
+      alert("Documet eliminado");
+      solicitud(user.idUser);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteID = async (deleteID) => {
     try {
       await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, {
@@ -126,10 +143,8 @@ function Form() {
       console.log(error);
     }
   };
-  
 
   useEffect(() => {
-    
     solicitud(user.idUser);
     const objs = dispatch(getUserIsAllowed());
     const requesInit = {
@@ -162,10 +177,11 @@ function Form() {
               display="flex"
               flexDirection="column"
               justifyContent={"center"}
-              alignItems="center"
               p="15px"
             >
-              <ModalHeader>SOLICITUD DE PRESTAMO</ModalHeader>
+              <ModalHeader textAlign={"center"}>
+                SOLICITUD DE PRESTAMO
+              </ModalHeader>
               <ModalCloseButton />
               <Box>
                 <h1>
@@ -214,8 +230,6 @@ function Form() {
                           color="black"
                         />
                       </div>
-                    </div>
-                    <div className="form-group-complet">
                       <div className="items">
                         <label>Tipo de documento </label>
                         <Input
@@ -226,6 +240,8 @@ function Form() {
                           color="black"
                         />
                       </div>
+                    </div>
+                    <div className="form-group-complet">
                       <div className="items">
                         <label>Telefono </label>
                         <Input
@@ -248,8 +264,8 @@ function Form() {
                           type="number"
                           borderColor="teal"
                           color="teal"
-                          placeholder="Edad"
                           _placeholder={{ color: "inherit" }}
+                          placeholder="Edad"
                           defaultValue={user.Edad ? user.Edad : ""}
                           disabled={user.Edad ? true : false}
                           onChange={handleChange}
@@ -275,19 +291,30 @@ function Form() {
                         <span>{validaDatos.sexo}</span>
                       </div>
                       <div className="items">
-                        <label>Descarga tu documento</label>
                         {user.img ? (
                           <>
                             {viculo.link ? (
                               <>
-                              <Box display={"flex"} justifyContent="center">
-
-                                <Button>
-                                  <a href={viculo.link}>
-                                    <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>{/*  hola */}
-                                  </a>
-                                </Button>
-                              </Box>
+                                <label>Descarga tu documento</label>
+                                <Box
+                                  display={"flex"}
+                                  justifyContent="center"
+                                  gap={"10px"}
+                                >
+                                  <Button title={`Download ${user.img}`}>
+                                    <a href={viculo.link}>
+                                      <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
+                                    </a>
+                                  </Button>
+                                  <Button>
+                                    <VscError
+                                      color="red"
+                                      onClick={() =>
+                                        handleDeleteDocument(user.idUser)
+                                      }
+                                    />
+                                  </Button>
+                                </Box>
                               </>
                             ) : (
                               <>
@@ -299,15 +326,39 @@ function Form() {
                           </>
                         ) : (
                           <>
-                            <label>Suber tu documento</label>
-                            <Input
-                              type="file"
-                              borderColor="teal"
-                              name="userFile"
-                              onChange={(e) => handleChangeFile(e)}
-                              accept="pdf/png"
-                            />
-                            <span role="alert"><b>{validaDatos.userFile}</b></span>
+                            <Box
+                              display={"flex"}
+                              justifyContent="center"
+                              alignItems="center"
+                              gap={"10px"}
+                            >
+                              <Box>
+                                <label>Añade tu documento</label>
+                                <Input
+                                  type="file"
+                                  borderColor="teal"
+                                  name="userFile"
+                                  onChange={(e) => handleChangeFile(e)}
+                                  accept="pdf/png"
+                                  id='fileUser'
+                                />
+                              </Box>
+                              {fileUser ? (
+                                <Button
+                                  top="10px"
+                                  bg="transparent"
+                                  borderRadius="100px"
+                                  onClick={()=>inputFile.value = ''}
+                                >
+                                  <VscError color="red" fontSize={"22px"} />
+                                </Button>
+                              ) : (
+                                ""
+                              )}
+                            </Box>
+                            <span role="alert">
+                              <>{validaDatos.userFile}</>
+                            </span>
                           </>
                         )}
                       </div>
@@ -317,7 +368,10 @@ function Form() {
               </Box>
               <br />
               <Box>
-                <Solicitud handleSubmitUser={handleSubmitUser} downloadDocument={downloadDocument}/>
+                <Solicitud
+                  handleSubmitUser={handleSubmitUser}
+                  downloadDocument={downloadDocument}
+                />
               </Box>
             </Box>
           </ModalBody>
