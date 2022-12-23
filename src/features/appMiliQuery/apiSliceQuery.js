@@ -18,11 +18,11 @@ export const apiMiliSlice = createApi({
             transformResponse: response => response.sort((a,b)=>b.idUser - a.idUser)
         }),
         createUser: builder.mutation({
-            query:(user)=>({
+            query:(newUser)=>({
                 url:'/users',
                 method:'POST',
                 headers:{"Content-Types": "application/json"},
-                body: user
+                body: newUser
             })
         }),
         validUserLogin: builder.query({
@@ -31,7 +31,10 @@ export const apiMiliSlice = createApi({
                 method:'PACTH',
                 headers:{"Content-Types": "application/json"},
                 body:datosUser
-            })
+            }),
+            queryFn:(data)=>{
+                return data;
+            }
         })
     })
 })

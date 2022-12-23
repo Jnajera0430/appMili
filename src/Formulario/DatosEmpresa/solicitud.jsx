@@ -1,7 +1,6 @@
 import { Input, Button, Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-
 import { getUserIsAllowed } from "../../features/appMili/appmiliSlice";
 
 export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
@@ -54,7 +53,9 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
 
     downloadDocument();
     e.target.reset();
-    window.location.reload(); 
+    setTimeout(() => {
+      window.location.reload();  
+           },700) 
   };
   useEffect(() => {
     const objs = dispatch(getUserIsAllowed());

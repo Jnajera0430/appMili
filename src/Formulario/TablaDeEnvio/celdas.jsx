@@ -1,4 +1,4 @@
-import { Button, Input, Td, Tr } from "@chakra-ui/react";
+import { Box, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Td, Tr, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { MdDelete, MdTaskAlt } from "react-icons/md";
 import { VscError } from "react-icons/vsc";
@@ -9,9 +9,12 @@ export default function Celdas({
   funcionSolicitud,
   idUser,
   arrSolicitud,
+  setEliminaSoli,
+  eliminaSoli
 }) {
   console.log();
   const [formEdit, setFormEdit] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [datos, setDatos] = useState({});
   const handleInputChange = (e) => {
     setDatos({
@@ -42,6 +45,7 @@ export default function Celdas({
     setFormEdit(false);
   };
   return (
+    <>
     <Tr>
       {arrSolicitud ? (
         <>
@@ -52,33 +56,33 @@ export default function Celdas({
                   defaultValue={solicitud.NombreEmpresa}
                   onChange={handleInputChange}
                   name="NombreEmpresa"
-                />
+                  />
               </Td>
               <Td>
                 <Input
                   defaultValue={solicitud.nitEmpresa}
                   onChange={handleInputChange}
                   name="nitEmpresa"
-                />
+                  />
               </Td>
               <Td>
                 <Input
                   defaultValue={solicitud.EstadiaEnEmpresa}
                   onChange={handleInputChange}
                   name="EstadiaEnEmpresa"
-                />
+                  />
               </Td>
               <Td>
                 <Input
                   defaultValue={solicitud.Monto}
                   onChange={handleInputChange}
                   name="Monto"
-                />
+                  />
               </Td>
               <Td
                 textAlign="center"
                 color={solicitud.estado ? "green.300" : "red.300"}
-              >
+                >
                 {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
               </Td>
               <Td
@@ -86,19 +90,19 @@ export default function Celdas({
                 gap={2}
                 justifyContent="center"
                 alignContent={"center"}
-              >
+                >
                 <Button
                   type="submit"
                   onClick={() => handleEditSolicitud(solicitud.id)}
                   title="Confirmar"
-                >
+                  >
                   <FiEdit className="edit" />
                 </Button>
                 <Button
                   type="submit"
                   onClick={() => setFormEdit(false)}
                   title="Cancelar"
-                >
+                  >
                   <VscError className="delete" />
                 </Button>
               </Td>
@@ -112,16 +116,14 @@ export default function Celdas({
               <Td
                 textAlign="center"
                 color={solicitud.estado ? "green.300" : "red.300"}
-              >
+                >
                 {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
               </Td>
               <Td display={"flex"} gap={2} justifyContent="center">
                 <Button type="submit" onClick={handleButtonEdit}>
                   <FiEdit className="acceptar-solicitud" />
                 </Button>
-                <Button type="submit" onClick={() => deleteID(solicitud.id)}>
-                  <MdDelete className="delete" />
-                </Button>
+                <Button onClick={onOpen}><MdDelete className="delete" /></Button>
               </Td>
             </>
           )}
@@ -134,5 +136,33 @@ export default function Celdas({
         </>
       )}
     </Tr>
+   
+
+
+<Modal isOpen={isOpen} onClose={onClose}>
+  <ModalOverlay />
+  <ModalContent>
+    <ModalHeader textAlign={"center"}>¿Está seguro que desea eliminar?</ModalHeader>
+    <ModalCloseButton />
+
+    <ModalFooter>
+      <Button colorScheme='blue' mr={3} onClick={onClose}>
+        Close
+      </Button>
+      <Button colorScheme='red' color={"white"} type="submit" onClick={() => {
+        deleteID(solicitud.id)
+        setTimeout(() => {
+          setEliminaSoli(!eliminaSoli)
+          setTimeout(() => {
+          setEliminaSoli(eliminaSoli)
+            
+          }, 1000);
+        },0);
+        } }>ELIMINAR</Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+
+      </>
   );
 }

@@ -20,8 +20,6 @@ import { users } from "../db/db";
 export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
-
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
@@ -38,12 +36,12 @@ export const Login = () => {
   });
   
   const validLoginUser =(user, password)=>user.find(userPass => userPass.Contraseña == password);
-  const getUser = (email)=>{
+  const getUser = (datosUser)=>{
     try {
       const typeUser = {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(email),
+        body: JSON.stringify(datosUser),
       };
       let result = fetch("http://localhost:8000/api/users",typeUser)  
               .then(reponse => reponse.json())   
@@ -58,38 +56,25 @@ export const Login = () => {
     e.preventDefault();
     
     const email = e.target.email.value;
-    const password = e.target.password.value;
+    const Contraseña = e.target.password.value;
     setUserLogin({
       email,
-      password,
+      Contraseña,
     });
-    const result = await getUser({email});
-    
-    if (result[0]) {      
-      const userVerified = validLoginUser(result,password);
-      if (userVerified) {
-
-        if(userVerified.rol === 'EMPLOYE'){
-          dispatch(setUser(userVerified))        
+    const result = await getUser({email,Contraseña});
+    if (result) {      
+        if(result.rol === 'EMPLOYE'){
+          dispatch(setUser(result))        
           navigate('/user');        
           window.location.reload();
-
         }else{
-          if (userVerified.rol === 'ADMIN') {
-            dispatch(setUser(userVerified));
+          if (result.rol === 'ADMIN') {
+            dispatch(setUser(result));
             navigate('/admin');
             window.location.reload();
           }
         }
-      }else{
-        setValidatedForm(
-          {
-            ...validatedForm,
-            userPass: 'User or account does not match'
-          }
-        );
-      }
-    } else {
+    }else{
       e.preventDefault();
       setValidatedForm(
         {

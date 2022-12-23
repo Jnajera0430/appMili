@@ -14,7 +14,8 @@ export const appMiliSlice = createSlice({
       localStorage.clear();
       const tokenUser = {
         email:action.payload.email,
-        rol: action.payload.rol
+        rol: action.payload.rol,
+        token: action.payload.token
       }
       localStorage.setItem("user", JSON.stringify(tokenUser));
     },

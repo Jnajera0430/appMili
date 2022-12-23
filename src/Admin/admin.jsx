@@ -10,26 +10,44 @@ import {
   Box,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { getUserIsAllowed } from "../features/appMili/appmiliSlice";
 import "./admin.css";
 import Tabla from "./tabla";
 
 export default function Admin() {
+  const dispatch = useDispatch();
   const [solicitado, setSolicitado] = useState([]);
-  const Solicitud = async () => {
-    const dataSoli = await fetch("http://localhost:8000/api/unionU_S");
-    const user = await dataSoli.json();
-    setSolicitado(user);
-  };
+  const [user, setUser] = useState(null);
+  
 
-  useEffect(() => {
-    Solicitud();
-  }, []);
+  const Solicitud = async () => {
+    const { payload } = dispatch(getUserIsAllowed());
+    setUser(payload)
+    const request = {
+      headers: {
+        token: payload?.token,
+      },
+    };
+    const dataSoli = await fetch("http://localhost:8000/api/unionU_S", request);
+    const dataUser = await dataSoli.json();
+
+    setSolicitado(dataUser);
+  };
 
   const deleteID = async (deleteID) => {
     try {
-      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, {
+      const { token } = user;
+      const request = {
         method: "DELETE",
-      });
+        body: JSON.stringify({
+          token,
+        }),
+        headers: {
+          "token": user?.token,
+        }
+      };
+      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, request);
       alert("solicitud eliminada");
       Solicitud();
     } catch (error) {
@@ -38,11 +56,13 @@ export default function Admin() {
   };
   const aprobarState = async (solicitudId, solicitadoEstado) => {
     try {
+      const { token } = user;
       const solicitud = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","token":user?.token },
         body: JSON.stringify({
           estado: !solicitadoEstado,
+          token,
         }),
       };
       await fetch(
@@ -55,6 +75,12 @@ export default function Admin() {
       console.log(error);
     }
   };
+  useEffect(  () => {
+    Solicitud();
+  }, []);
+ 
+    
+ 
   return (
     <Box height={"95vh"} p="10px" justifyContent="center" alignItems="center">
       <Box
@@ -94,9 +120,10 @@ export default function Admin() {
                     deleteID={deleteID}
                     aprobarState={aprobarState}
                     Solicitud={Solicitud}
+                    token={user.token}
                   />
                 );
-              })}
+              })} 
             </Tbody>
           </Table>
         </TableContainer>

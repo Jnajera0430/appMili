@@ -9,6 +9,7 @@ export default function Tabla({
   deleteID,
   aprobarState,
   Solicitud,
+  token
 }) {
   const { user } = solicitud;
   const [formEdit, setFormEdit] = useState(false);
@@ -29,7 +30,7 @@ export default function Tabla({
     try {
       const solicitud = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json","token": token },
         body: JSON.stringify(datos),
       };
       await fetch(
@@ -41,13 +42,13 @@ export default function Tabla({
     } catch (error) {
       console.log(error);
     }
-
     setFormEdit(false);
   };
 
   const downloadDocument = async (idUser) => {
     const requestDocument = {
       method: "GET",
+      headers:{token}
     };
 
     await fetch(`http://localhost:8000/api/index/${idUser}`, requestDocument)

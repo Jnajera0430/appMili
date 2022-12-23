@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Input,
@@ -21,14 +23,17 @@ import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
 import "./forms.css";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
+
 const options = [{ value: "F", label: "F" }];
 
 function Form() {
-  const inputFile = document.getElementById('fileUser')
+  const inputFile = document.getElementById("fileUser");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
+  const [alerSoliEnv, setAlerSoliEnv] = useState(false);
+  const [docuElimi, setDocuElimi] = useState(false);
   const [solicitado, setSolicitado] = useState([]);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   const [datos, setdatos] = useState({});
   const [viculo, setVinculo] = useState({
     link: null,
@@ -40,6 +45,8 @@ function Form() {
     sexo: undefined,
     userFile: undefined,
   });
+  const [userLogin, setUserLogin]=useState({});
+  console.log(user.idUser);
   const handleChangeFile = (e) => {
     setFileUser(e.target.files[0]);
 
@@ -70,6 +77,7 @@ function Form() {
   const downloadDocument = async () => {
     const requestDocument = {
       method: "GET",
+      headers:{"token":userLogin.token}
     };
 
     await fetch(
@@ -81,24 +89,24 @@ function Form() {
   };
 
   const solicitud = async (idUser) => {
+    console.log(idUser);
     const request = {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json","token":userLogin.token},
     };
     let result = await fetch(
-      `http://localhost:8000/api/solicitudes/${idUser}`,
+      `http://localhost:8000/api/solicitudes/${user.idUser}`,
       request
     )
-      .then((response) => response.json())
-      .then((data) => data);
-    setSolicitado(result);
+    const dato = await result.json();
+    setSolicitado(dato);
   };
 
   const handleSubmitUser = async (e) => {
     e.preventDefault();
     const users = {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json","token":userLogin.token},
       body: JSON.stringify(datos),
     };
     fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
@@ -108,13 +116,17 @@ function Form() {
 
     const requestFile = {
       method: "POST",
+      headers:{"token":userLogin.token},
       body: formdata,
     };
     fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
       .then((response) => response.json())
       .catch((err) => err.json);
 
-    alert("datos guardados");
+    /*  alert("datos guardados"); */
+
+    setAlerSoliEnv(true);
+
     e.target.reset();
   };
 
@@ -122,11 +134,14 @@ function Form() {
     console.log(idUser);
     try {
       await fetch(`http://localhost:8000/api/index/${idUser}`, {
-        method: "DELETE",
+        method: "DELETE",headers:{"token":userLogin.token}
       });
-      alert("Documet eliminado");
+      /* alert("Documet eliminado"); */
+      setDocuElimi(true);
       solicitud(user.idUser);
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 700);
     } catch (error) {
       console.log(error);
     }
@@ -135,9 +150,9 @@ function Form() {
   const deleteID = async (deleteID) => {
     try {
       await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, {
-        method: "DELETE",
+        method: "DELETE",headers:{"token":userLogin.token}
       });
-      alert("solicitud eliminada");
+      /* alert("solicitud eliminada"); */
       solicitud(user.idUser);
     } catch (error) {
       console.log(error);
@@ -145,22 +160,22 @@ function Form() {
   };
 
   useEffect(() => {
-    solicitud(user.idUser);
-    const objs = dispatch(getUserIsAllowed());
+    const { payload } = dispatch(getUserIsAllowed());
+    setUserLogin(payload);
     const requesInit = {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: objs.payload.email }),
+      headers: { "Content-Type": "application/json","token":payload.token  },
+      
     };
-    fetch("http://localhost:8000/api/users", requesInit)
+    fetch("http://localhost:8000/api/users/myself", requesInit)
       .then((response) => response.json())
-      .then((res) => setUser(res[0]))
+      .then((res) => setUser(res))
       .catch((err) => err.json);
   }, []);
 
   useEffect(() => {
     downloadDocument();
-    solicitud(user.idUser);
+    solicitud(user?.idUser);
   }, [user]);
   return (
     <>
@@ -170,7 +185,44 @@ function Form() {
         </Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay max-width="none" display="flex" alignItems="center" />
+        <ModalOverlay max-width="none" w={"100%"}>
+          {alerSoliEnv ? (
+            <Box
+              w={"98%"}
+              display="flex"
+              justifyContent={"end"}
+              height="100px"
+              alignItems={"center"}
+            >
+              <Alert
+                status="success"
+                variant="solid"
+                top={"10px"}
+                height={10}
+                w={"auto"}
+              >
+                <AlertIcon />
+                Solicitud generada con exito
+              </Alert>
+            </Box>
+          ) : (
+            <></>
+          )}
+          {docuElimi ? (
+            <Box
+              w={"98%"}
+              display="flex"
+              justifyContent={"end"}
+              height="100px"
+              alignItems={"center"}
+            >
+              <Alert status="error" top={"10px"} height={10} w={"auto"}>
+                <AlertIcon />
+                Documento eliminado
+              </Alert>
+            </Box>
+          ) : null}
+        </ModalOverlay>
         <ModalContent width="auto" maxWidth="none">
           <ModalBody>
             <Box
@@ -329,37 +381,43 @@ function Form() {
                             <Box
                               display={"flex"}
                               justifyContent="center"
-                              flexDirection={"column"}
                               alignItems="center"
                               gap={"10px"}
-                              w="80%"
                             >
+                              <Box>
                                 <label>Añade tu documento</label>
-                              <Box border={"1px solid"} display="flex" borderRadius={"5px"} alignItems="center" justifyContent={"center"}>
                                 <Input
-                                w={"80%"}
                                   type="file"
                                   borderColor="teal"
                                   name="userFile"
                                   onChange={(e) => handleChangeFile(e)}
                                   accept="pdf/png"
-                                  id='fileUser'
-                                  border={"none"}
+                                  id="fileUser"
                                 />
+                            {/*     <div className="file-select" id="src-file1">
+                                  <input
+                                    type="file"
+                                    borderColor="teal"
+                                    name="userFile"
+                                    onChange={(e) => handleChangeFile(e)}
+                                    accept="pdf/png"
+                                    id="fileUser"
+                                  />
+                                </div> */}
+                              </Box>
                               {fileUser ? (
                                 <Button
-                                /* top="10px" */
-                                bg="transparent"
-                                borderRadius="100px"
-                                onClick={()=>inputFile.value = ''}
+                                  top="10px"
+                                  bg="transparent"
+                                  borderRadius="100px"
+                                  onClick={() => (inputFile.value = "")}
                                 >
                                   <VscError color="red" fontSize={"22px"} />
                                 </Button>
                               ) : (
                                 ""
-                                )}
+                              )}
                             </Box>
-                                </Box>
                             <span role="alert">
                               <>{validaDatos.userFile}</>
                             </span>
