@@ -46,7 +46,6 @@ function Form() {
     userFile: undefined,
   });
   const [userLogin, setUserLogin]=useState({});
-  console.log(user.idUser);
   const handleChangeFile = (e) => {
     setFileUser(e.target.files[0]);
 
@@ -74,69 +73,69 @@ function Form() {
       });
     }
   };
-  const downloadDocument = async () => {
+  const downloadDocument = async (idUser) => {
     const requestDocument = {
       method: "GET",
       headers:{"token":userLogin.token}
     };
 
-    await fetch(
-      `http://localhost:8000/api/index/${user.idUser}`,
+     fetch(
+      `http://localhost:8000/api/index/${idUser}`,
       requestDocument
     )
       .then((response) => response.json())
       .then((data) => setVinculo(data));
   };
-
+  //Esta funcion esta funcionando correctamente (Soolicitud de solicitudes).
   const solicitud = async (idUser) => {
-    console.log(idUser);
     const request = {
       method: "PATCH",
       headers: { "Content-Type": "application/json","token":userLogin.token},
     };
     let result = await fetch(
-      `http://localhost:8000/api/solicitudes/${user.idUser}`,
+      `http://localhost:8000/api/solicitudes/${idUser}`,
       request
     )
-    const dato = await result.json();
+    let dato = await result.json();
     setSolicitado(dato);
   };
 
   const handleSubmitUser = async (e) => {
     e.preventDefault();
+    solicitud(user.idUser);
+    //Editar Usuarios Funcionando
     const users = {
       method: "PUT",
       headers: { "Content-Type": "application/json","token":userLogin.token},
       body: JSON.stringify(datos),
     };
     fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
-    solicitud(user.idUser);
+    
+    //Envio del formData funcionando
     const formdata = new FormData();
     formdata.append("file", fileUser);
-
+    
     const requestFile = {
       method: "POST",
       headers:{"token":userLogin.token},
       body: formdata,
     };
     fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
-      .then((response) => response.json())
-      .catch((err) => err.json);
-
+    .then((response) => response.json())
+    .catch((err) => err.json);
+    
     /*  alert("datos guardados"); */
-
+    
     setAlerSoliEnv(true);
 
     e.target.reset();
   };
-
+//Eliminar documento funciona correctamente
   const handleDeleteDocument = async (idUser) => {
-    console.log(idUser);
     try {
       await fetch(`http://localhost:8000/api/index/${idUser}`, {
         method: "DELETE",headers:{"token":userLogin.token}
       });
-      /* alert("Documet eliminado"); */
       setDocuElimi(true);
       solicitud(user.idUser);
       setTimeout(() => {
@@ -159,7 +158,7 @@ function Form() {
     }
   };
 
-  useEffect(() => {
+  const userMySelf =()=>{
     const { payload } = dispatch(getUserIsAllowed());
     setUserLogin(payload);
     const requesInit = {
@@ -171,11 +170,16 @@ function Form() {
       .then((response) => response.json())
       .then((res) => setUser(res))
       .catch((err) => err.json);
+  }
+
+  useEffect(() => {
+    userMySelf();
+    solicitud(user.idUser);
   }, []);
 
   useEffect(() => {
-    downloadDocument();
-    solicitud(user?.idUser);
+    downloadDocument(user.idUser);
+    solicitud(user.idUser);
   }, [user]);
   return (
     <>

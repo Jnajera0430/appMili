@@ -15,10 +15,14 @@ export const TablaEnvUser = ({
   solicitado,
   deleteID,
   funcionSolicitud,
-  idUser,
+  idUser
 }) => {
+  const [datosSolicitud, setDatosSolicitud] = useState([]);
   const [eliminaSoli, setEliminaSoli] = useState(false);
-  console.log(solicitado)
+  useEffect(() => {
+    setDatosSolicitud(solicitado);
+  }, [solicitado]);
+
   return (
     <Box p="10px" justifyContent="center" alignItems="center">
       <Box
@@ -42,20 +46,27 @@ export const TablaEnvUser = ({
               </Tr>
             </Thead>
             <Tbody>
-              {/* {solicitado.map((solicitud, _, arrSolicitud) => {
-                return (
-                  <Celdas
-                    key={solicitud.id}
-                    solicitud={solicitud}
-                    deleteID={deleteID}
-                    funcionSolicitud={funcionSolicitud}
-                    arrSolicitud={arrSolicitud}
-                    idUser={idUser}
-                    eliminaSoli={eliminaSoli}
-                    setEliminaSoli={setEliminaSoli}
-                  />
-                );
-              })}  */}
+
+              {datosSolicitud === "token not foud" ? (
+                <b>No hay datos</b>
+              ) : (
+                <>
+                  {datosSolicitud.map((solicitud, _, arrSolicitud) => {
+                    return (
+                      <Celdas
+                        key={solicitud.id}
+                        solicitud={solicitud}
+                        deleteID={deleteID}
+                        funcionSolicitud={funcionSolicitud}
+                        arrSolicitud={arrSolicitud}
+                        idUser={idUser}
+                        eliminaSoli={eliminaSoli}
+                        setEliminaSoli={setEliminaSoli}
+                      />
+                    );
+                  })}
+                </>
+              )}
             </Tbody>
           </Table>
         </TableContainer>

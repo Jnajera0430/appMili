@@ -7,7 +7,6 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
   const dispatch = useDispatch();
   const [input, setInput] = useState();
   const [user, setuser] = useState({});
-  
   const [validaDatos, setValidaDatos] = useState({
     NombreEmpresa: undefined,
     nitEmpresa: undefined,
@@ -15,13 +14,13 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
     fecha: undefined,
     Monto: undefined,
   });
-
+  const [userLogin, setUserLogin]=useState({});
   const handleChange = (e) => {
     e.preventDefault();
     setInput({
       ...input,
       [e.target.name]: e.target.value,
-      iduser: user[0].idUser,
+      iduser: user.idUser,
     });
 
     if (
@@ -42,7 +41,7 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
     //consulta
     const requesInit = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json","token":userLogin.token  },
       body: JSON.stringify(input),
     };
 
@@ -51,23 +50,23 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
     .catch((err) => err.json);
 
 
-    downloadDocument();
+    // downloadDocument();
     e.target.reset();
     setTimeout(() => {
       window.location.reload();  
            },700) 
   };
   useEffect(() => {
-    const objs = dispatch(getUserIsAllowed());
+    const {payload} = dispatch(getUserIsAllowed());
     const requesInit = {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: objs.payload.email }),
+      headers: { "Content-Type": "application/json","token":payload.token  } 
     };
-    fetch("http://localhost:8000/api/users", requesInit)
+    fetch("http://localhost:8000/api/users/myself", requesInit)
       .then((response) => response.json())
       .then((res) => setuser(res))
       .catch((err) => err.json);
+      setUserLogin(payload);
   }, []);
 
   const isValidedForm = Object.keys(validaDatos).every(

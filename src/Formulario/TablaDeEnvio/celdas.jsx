@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { MdDelete, MdTaskAlt } from "react-icons/md";
 import { VscError } from "react-icons/vsc";
 import { FiEdit } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import {getUserIsAllowed} from '../../features/appMili/appmiliSlice'
 export default function Celdas({
   solicitud,
   deleteID,
@@ -12,10 +14,10 @@ export default function Celdas({
   setEliminaSoli,
   eliminaSoli
 }) {
-  console.log();
   const [formEdit, setFormEdit] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [datos, setDatos] = useState({});
+  const dispatch = useDispatch();
   const handleInputChange = (e) => {
     setDatos({
       ...datos,
@@ -26,10 +28,11 @@ export default function Celdas({
     setFormEdit(!formEdit);
   };
   const handleEditSolicitud = async (idSolicitud) => {
+    const {payload} = dispatch(getUserIsAllowed())
     try {
       const solicitud = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" ,"token":payload.token},
         body: JSON.stringify(datos),
       };
       await fetch(
@@ -131,7 +134,7 @@ export default function Celdas({
       ) : (
         <>
           <Tr>
-            <Span>NO HAY DATOS</Span>
+            <Span textAlign="center">NO HAY DATOS</Span>
           </Tr>
         </>
       )}

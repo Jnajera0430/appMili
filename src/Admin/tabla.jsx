@@ -112,6 +112,27 @@ export default function Tabla({
           <Td color={solicitud.estado ? "green.300" : "red.300"}>
             {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
           </Td>
+          <Td textAlign={"center"}>
+            {vinculo.link ? (
+              <>
+              <Button type="submit">
+
+                  <a href={vinculo.link}><AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload></a>
+              </Button>
+                
+              </>
+            ) : (
+              <>
+                {user.img}
+                <Button
+                  onClick={() => downloadDocument(user.idUser)}
+                  background="transparent"
+                >
+                  <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
+                </Button>
+              </>
+            )}
+          </Td>
           <Td display={"flex"} gap={"10px"} justifyContent="center">
             <Button
               type="submit"
