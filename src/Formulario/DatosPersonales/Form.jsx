@@ -183,13 +183,13 @@ function Form() {
   }, [user]);
   return (
     <>
-      <Box display={"flex"} w="80%" justifyContent={"flex-end"}>
+      <Box display={"flex"} w="80%" justifyContent={"flex-end"}     >
         <Button onClick={onOpen} colorScheme="green">
           SOLICITAR PRESTAMO
         </Button>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay max-width="none" w={"100%"}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered >
+        <ModalOverlay max-width="none" w={"100%"} >
           {alerSoliEnv ? (
             <Box
               w={"98%"}
@@ -197,6 +197,7 @@ function Form() {
               justifyContent={"end"}
               height="100px"
               alignItems={"center"}
+              boxShadow= "0px 0px 20px #000"
             >
               <Alert
                 status="success"
@@ -227,7 +228,7 @@ function Form() {
             </Box>
           ) : null}
         </ModalOverlay>
-        <ModalContent width="auto" maxWidth="none">
+        <ModalContent width="auto" maxWidth="none" boxShadow= "0px 0px 20px #000">
           <ModalBody>
             <Box
               display="flex"
@@ -236,7 +237,7 @@ function Form() {
               p="15px"
             >
               <ModalHeader textAlign={"center"}>
-                SOLICITUD DE PRESTAMO
+                SOLICITUD DE PRESTAMO 
               </ModalHeader>
               <ModalCloseButton />
               <Box>

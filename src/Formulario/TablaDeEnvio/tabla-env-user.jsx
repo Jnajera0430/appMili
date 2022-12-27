@@ -15,14 +15,14 @@ export const TablaEnvUser = ({
   solicitado,
   deleteID,
   funcionSolicitud,
-  idUser
+  idUser,
 }) => {
   const [datosSolicitud, setDatosSolicitud] = useState([]);
   const [eliminaSoli, setEliminaSoli] = useState(false);
   useEffect(() => {
     setDatosSolicitud(solicitado);
   }, [solicitado]);
-
+  console.log();
   return (
     <Box p="10px" justifyContent="center" alignItems="center">
       <Box
@@ -31,27 +31,31 @@ export const TablaEnvUser = ({
         justifyContent="center"
         alignItems="center"
       >
-        <TableContainer border="1px solid black" w={"80%"}>
-          <p>Tus solicitudes</p>
-          <hr />
-          <Table size="sm">
-            <Thead>
-              <Tr>
-                <Th textAlign="center">Nombre Empresa</Th>
-                <Th textAlign="center">Nit Empresa</Th>
-                <Th textAlign="center">Estadia en Empresa</Th>
-                <Th textAlign="center">Monto</Th>
-                <Th textAlign="center">Estado</Th>
-                <Th textAlign="center">Acciones</Th>
+          <b>TUS SOLICITUDES</b>
+        <TableContainer w={"80%"}     border= "1px solid" boxShadow={"0px 0px 8px  #5a5a5a"}>
+          <Table>
+            <Thead  bg="#93dbb4"> 
+              <Tr >
+                <Th textAlign="center" color="black">Nombre Empresa</Th>
+                <Th textAlign="center" color="black">Nit Empresa</Th>
+                <Th textAlign="center" color="black">Estadia en Empresa</Th>
+                <Th textAlign="center" color="black">Monto</Th>
+                <Th textAlign="center" color="black">Estado</Th>
+                <Th textAlign="center" color="black">Acciones</Th>
               </Tr>
             </Thead>
+            <Thead width="100%" textAlign={"center"}>
+              {datosSolicitud.length === 0 ? (
+                <b>NO TIENES SOLICITUDES</b>
+              ) : null}
+            </Thead>
             <Tbody>
-
               {datosSolicitud === "token not foud" ? (
                 <b>No hay datos</b>
               ) : (
                 <>
                   {datosSolicitud.map((solicitud, _, arrSolicitud) => {
+                    console.log(datosSolicitud);
                     return (
                       <Celdas
                         key={solicitud.id}

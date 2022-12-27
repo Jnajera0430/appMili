@@ -6,7 +6,7 @@ import { FiEdit } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import {getUserIsAllowed} from '../../features/appMili/appmiliSlice'
 export default function Celdas({
-  solicitud,
+  solicitud=null,
   deleteID,
   funcionSolicitud,
   idUser,
@@ -49,8 +49,8 @@ export default function Celdas({
   };
   return (
     <>
-    <Tr>
-      {arrSolicitud ? (
+    <Tr bg="#f9f9f9">
+      {arrSolicitud.length !==0 ? (
         <>
           {formEdit ? (
             <>
@@ -98,6 +98,7 @@ export default function Celdas({
                   type="submit"
                   onClick={() => handleEditSolicitud(solicitud.id)}
                   title="Confirmar"
+                  bg="transparent"
                   >
                   <FiEdit className="edit" />
                 </Button>
@@ -105,6 +106,7 @@ export default function Celdas({
                   type="submit"
                   onClick={() => setFormEdit(false)}
                   title="Cancelar"
+                  bg="transparent"
                   >
                   <VscError className="delete" />
                 </Button>
@@ -112,7 +114,7 @@ export default function Celdas({
             </>
           ) : (
             <>
-              <Td textAlign="center">{solicitud.NombreEmpresa} </Td>
+              <Td textAlign="center">{solicitud.NombreEmpresa}</Td>
               <Td textAlign="center">{solicitud.nitEmpresa}</Td>
               <Td textAlign="center">{solicitud.EstadiaEnEmpresa}</Td>
               <Td textAlign="center">{solicitud.Monto}</Td>
@@ -123,21 +125,23 @@ export default function Celdas({
                 {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
               </Td>
               <Td display={"flex"} gap={2} justifyContent="center">
-                <Button type="submit" onClick={handleButtonEdit}>
+                <Button type="submit" onClick={handleButtonEdit} bg="transparent">
                   <FiEdit className="acceptar-solicitud" />
                 </Button>
-                <Button onClick={onOpen}><MdDelete className="delete" /></Button>
+                <Button onClick={onOpen} bg="transparent"><MdDelete className="delete" /></Button>
               </Td>
             </>
           )}
         </>
       ) : (
         <>
-          <Tr>
-            <Span textAlign="center">NO HAY DATOS</Span>
-          </Tr>
+          
+            <Td textAlign="center">NO HAY DATOS</Td>
+          
         </>
       )}
+
+      
     </Tr>
    
 
