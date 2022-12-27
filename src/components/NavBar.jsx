@@ -2,10 +2,8 @@ import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { setLogoutUser } from "../features/appMili/appmiliSlice";
 
 export const Navegation = ({ user }) => {
-  const dispatch = useDispatch();
   const [route,setRoute]=useState(false);
   const handleButton =()=>{
     if (route) {
@@ -29,7 +27,8 @@ export const Navegation = ({ user }) => {
           <Box height='100%' alignItems='center' textAlign='center'>
             <Button onClick={(e)=>{
                 e.preventDefault();
-                dispatch(setLogoutUser())
+                localStorage.clear();
+                window.location.reload();
               }} >Logout</Button>
           </Box>
         </Flex>

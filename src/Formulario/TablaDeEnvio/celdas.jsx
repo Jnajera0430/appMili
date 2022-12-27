@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { MdDelete, MdTaskAlt } from "react-icons/md";
 import { VscError } from "react-icons/vsc";
 import { FiEdit } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-import {getUserIsAllowed} from '../../features/appMili/appmiliSlice'
 export default function Celdas({
   solicitud=null,
   deleteID,
@@ -17,7 +15,6 @@ export default function Celdas({
   const [formEdit, setFormEdit] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [datos, setDatos] = useState({});
-  const dispatch = useDispatch();
   const handleInputChange = (e) => {
     setDatos({
       ...datos,
@@ -28,7 +25,7 @@ export default function Celdas({
     setFormEdit(!formEdit);
   };
   const handleEditSolicitud = async (idSolicitud) => {
-    const {payload} = dispatch(getUserIsAllowed())
+    const payload = JSON.parse(localStorage.getItem('user'));
     try {
       const solicitud = {
         method: "PUT",

@@ -1,12 +1,9 @@
 import { Box, Button, Flex, Heading, Input, Select, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCreateUserMutation } from "../app/appMiliSlice";
 import { ValidEmail } from "./validate";
-import { setSignUp } from "../features/appMili/appmiliSlice";
-import { useCreateUserMutation } from "../features/appMiliQuery/apiSliceQuery";
 export const SingUp = () => {
-  const [createUser]=useCreateUserMutation()
-  const dispacth = useDispatch();
+  const [createNewUser]=useCreateUserMutation();
   const inputBackground = useColorModeValue("white", "gray.600");
   const [dataUser, setDataUser] = useState({
     firtsName: "",
@@ -87,34 +84,14 @@ export const SingUp = () => {
     const TipoDocumento = e.target.selectTipoCedula.value;
     const NumCedula = e.target.numCedula.value;
     const Contraseña = e.target.password.value;
-
-    /* dispacth(
-      setSignUp({
-        nombre,
-        Apellidos,
-        email,
-        TipoDocumento,
-        Telefono: null,
-        Edad: null,
-        sexo: null,
-        NumCedula,
-        Contraseña,
-        estado: true,
-        rol: "EMPLOYE",
-      })
-    ); */
-    createUser({
+    createNewUser({
       nombre,
       Apellidos,
       email,
       TipoDocumento,
-      Telefono: null,
-      Edad: null,
-      sexo: null,
       NumCedula,
       Contraseña,
-      estado: true,
-      rol: "EMPLOYE",
+      rol: 'EMPLOYE'
     })
     e.target.reset();
   };

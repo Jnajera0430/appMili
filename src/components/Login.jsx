@@ -8,75 +8,50 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import {  useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
 import { ValidEmail } from "./validate";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import {setUser,getUser} from '../features/appMili/appmiliSlice';
-import { users } from "../db/db";
-import { useValidUserLoginMutation } from "../features/appMiliQuery/apiSliceQuery";
+import { useGetUserCheckedQuery } from "../app/appMiliSlice";
 
 
 export const Login = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [validUser,{data}]=useValidUserLoginMutation();
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
   const [userLogin, setUserLogin] = useState({
     email:'',
-    password:''
+    Contraseña:''
   });
+  
+  const {data:userChecked,isError,error}= useGetUserCheckedQuery(userLogin);
+  if(isError)return console.log(error);
   const [seePassword, setSeePassword] = useState(null);
-
   const [validatedForm, setValidatedForm] = useState({
     email: undefined,
     password: undefined,
     userPass: undefined,
   });
   
-  const getUser = (datosUser)=>{
-    try {
-      const typeUser = {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datosUser),
-      };
-      let result = fetch("http://localhost:8000/api/users",typeUser)  
-              .then(reponse => reponse.json())   
-              .then(dato =>dato);  
-      return result;                                                   
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     
-    const email = e.target.email.value;
-    const Contraseña = e.target.password.value;
-    setUserLogin({
-      email,
-      Contraseña,
-    });
-    const result = await getUser({email,Contraseña});
-      await validUser({email,Contraseña});
-    console.log(data);
-    if (result) {      
-        if(result.rol === 'EMPLOYE'){
-          dispatch(setUser(result))        
+    if (userChecked) {  
+      console.log(userChecked);    
+         if(userChecked.rol === 'EMPLOYE'){
+          localStorage.setItem('user',JSON.stringify(userChecked))
           navigate('/user');        
           window.location.reload();
         }else{
-          if (result.rol === 'ADMIN') {
-            dispatch(setUser(result));
+          if (userChecked.rol === 'ADMIN') {
+            localStorage.setItem('user',JSON.stringify(userChecked))
             navigate('/admin');
             window.location.reload();
           }
-        }
+        } 
     }else{
       e.preventDefault();
       setValidatedForm(
@@ -90,6 +65,10 @@ export const Login = () => {
 
   const onChangeForm = (e) => {
     if (e.target.name === "email") {
+      setUserLogin({
+        ...userLogin,
+        [e.target.name]:e.target.value
+      })
       setValidatedForm({
         ...validatedForm,
         email:
@@ -102,7 +81,10 @@ export const Login = () => {
       });
     }
     if (e.target.name === "password") {
-      
+      setUserLogin({
+        ...userLogin,
+        Contraseña:e.target.value
+      })
       setValidatedForm({
         ...validatedForm,
         password: e.target.value.length < 7 ? "Password too short" : "",
@@ -130,7 +112,6 @@ export const Login = () => {
   const isValidedForm = Object.keys(validatedForm).every(
     (key) => validatedForm[key] === ""
   );
-
   
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center">

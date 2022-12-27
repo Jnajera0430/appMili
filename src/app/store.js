@@ -1,9 +1,14 @@
 import {configureStore} from '@reduxjs/toolkit';
-import appMiliReducer from '../features/appMili/appmiliSlice'
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
+import { restApi } from './appMiliSlice';
 export const store = configureStore(
     {
         reducer:{
-            datos: appMiliReducer
-        }
+            [restApi.reducerPath]: restApi.reducer
+        },
+        middleware:(getDefaultMiddleware)=>
+            getDefaultMiddleware().concat(restApi.middleware)
     }
 );
+
+setupListeners(store.dispatch);

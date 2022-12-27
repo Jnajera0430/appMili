@@ -1,55 +1,34 @@
 import {
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
   Table,
   TableContainer,
-  Button,
   Box,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getUserIsAllowed } from "../features/appMili/appmiliSlice";
+import { useEffect, useState } from "react";
+import { useGetAllSolicitudesQuery } from "../app/appMiliSlice";
 import "./admin.css";
 import Tabla from "./tabla";
 
 export default function Admin() {
-  const dispatch = useDispatch();
   const [solicitado, setSolicitado] = useState([]);
   const [user, setUser] = useState(null);
+  const datosUser  = JSON.parse(localStorage.getItem('user'))
+  const {data:allSolicitudes,isError,error,isSuccess}=useGetAllSolicitudesQuery(datosUser.token);
+  if (isError)return console.log(error);
   
-
-  const Solicitud = async () => {
-    const { payload } = dispatch(getUserIsAllowed());
-    setUser(payload)
-    const request = {
-      headers: {
-        token: payload?.token,
-      },
-    };
-    const dataSoli = await fetch("http://localhost:8000/api/unionU_S", request);
-    const dataUser = await dataSoli.json();
-
-    setSolicitado(dataUser);
-  };
-
   const deleteID = async (deleteID) => {
     try {
-      const { token } = user;
       const request = {
         method: "DELETE",
-        body: JSON.stringify({
-          token,
-        }),
         headers: {
-          "token": user?.token,
+          "token": datosUser.token,
         }
       };
       await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, request);
       alert("solicitud eliminada");
-      Solicitud();
     } catch (error) {
       console.log(error);
     }
@@ -70,15 +49,21 @@ export default function Admin() {
         solicitud
       );
       alert("estado actualizado");
-      Solicitud();
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(  () => {
-    Solicitud();
-  }, []);
- 
+    const algo = ()=>{
+      if (isSuccess) {
+        console.log(allSolicitudes);
+        setSolicitado(allSolicitudes);
+      }
+
+    }
+    algo();
+  }, [allSolicitudes]);
+
     
  
   return (
@@ -119,8 +104,7 @@ export default function Admin() {
                     solicitud={solicitud}
                     deleteID={deleteID}
                     aprobarState={aprobarState}
-                    Solicitud={Solicitud}
-                    token={user.token}
+                    token={datosUser.token}
                   />
                 );
               })} 

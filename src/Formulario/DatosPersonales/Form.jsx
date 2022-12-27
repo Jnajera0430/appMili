@@ -15,8 +15,6 @@ import {
 } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getUserIsAllowed } from "../../features/appMili/appmiliSlice";
 import { Solicitud } from "../DatosEmpresa/solicitud";
 
 import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
@@ -159,7 +157,7 @@ function Form() {
   };
 
   const userMySelf =()=>{
-    const { payload } = dispatch(getUserIsAllowed());
+    const  payload = JSON.parse(localStorage.getItem('user'));
     setUserLogin(payload);
     const requesInit = {
       method: "PATCH",

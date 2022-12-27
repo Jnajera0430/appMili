@@ -1,7 +1,6 @@
 import { Input, Button, Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getUserIsAllowed } from "../../features/appMili/appmiliSlice";
 
 export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
   const dispatch = useDispatch();
@@ -57,7 +56,7 @@ export const Solicitud = ({ handleSubmitUser ,downloadDocument}) => {
            },700) 
   };
   useEffect(() => {
-    const {payload} = dispatch(getUserIsAllowed());
+    const  payload = JSON.parse(localStorage.getItem('user'));
     const requesInit = {
       method: "PATCH",
       headers: { "Content-Type": "application/json","token":payload.token  } 
