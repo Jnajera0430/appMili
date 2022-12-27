@@ -15,11 +15,13 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import {setUser,getUser} from '../features/appMili/appmiliSlice';
 import { users } from "../db/db";
+import { useValidUserLoginMutation } from "../features/appMiliQuery/apiSliceQuery";
 
 
 export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [validUser,{data}]=useValidUserLoginMutation();
   const { toggleColorMode } = useColorMode();
   const formBackgound = useColorModeValue("gray.100", "gray.700");
   const inputBackground = useColorModeValue("white", "gray.600");
@@ -35,7 +37,6 @@ export const Login = () => {
     userPass: undefined,
   });
   
-  const validLoginUser =(user, password)=>user.find(userPass => userPass.Contraseña == password);
   const getUser = (datosUser)=>{
     try {
       const typeUser = {
@@ -62,6 +63,8 @@ export const Login = () => {
       Contraseña,
     });
     const result = await getUser({email,Contraseña});
+      await validUser({email,Contraseña});
+    console.log(data);
     if (result) {      
         if(result.rol === 'EMPLOYE'){
           dispatch(setUser(result))        

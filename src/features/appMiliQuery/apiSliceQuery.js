@@ -25,10 +25,10 @@ export const apiMiliSlice = createApi({
                 body: newUser
             })
         }),
-        validUserLogin: builder.query({
+        validUserLogin: builder.mutation({
             query:(datosUser)=>({
                 url:'/users',
-                method:'PACTH',
+                method:'PATCH',
                 headers:{"Content-Types": "application/json"},
                 body:datosUser
             }),
@@ -39,4 +39,4 @@ export const apiMiliSlice = createApi({
     })
 })
 
-export const {useCreateUserMutation ,useValidUserLoginQuery} = apiMiliSlice;
+export const {useCreateUserMutation ,useValidUserLoginMutation} = apiMiliSlice;
