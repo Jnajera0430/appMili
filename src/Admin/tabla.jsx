@@ -4,19 +4,29 @@ import { MdDelete, MdTaskAlt } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { VscError } from "react-icons/vsc";
 import { AiOutlineCloudDownload } from "react-icons/ai";
-export default function Tabla({
-  solicitud,
-  deleteID,
-  aprobarState,
-  Solicitud,
-  token
-}) {
+import {
+  useDeleteSolicitudByIdMutation,
+  useUpDateSolicitudByIdMutation,
+  useUpDateStateBySolicitudMutation,
+} from "../app/appMiliSlice";
+export default function Tabla({ solicitud, Solicitud, token }) {
   const { user } = solicitud;
   const [formEdit, setFormEdit] = useState(false);
   const [datos, setDatos] = useState({});
   const [vinculo, setVinculo] = useState({
     link: null,
   });
+
+  const [deleteID, { isError: isErrorDelete, error: errorMessage }] =
+    useDeleteSolicitudByIdMutation();
+  if (isErrorDelete) return console.log(errorMessage);
+  const [upDateState, { isError: isErrorStateSol, error: errorStateSol }] =
+    useUpDateStateBySolicitudMutation();
+  if (isErrorStateSol) return console.log(errorStateSol);
+  const [upDateSolicitud, { isError: isErrorEditSol, error: errorEditSol }] =
+    useUpDateSolicitudByIdMutation();
+  if (isErrorEditSol) return console.log(errorEditSol);
+
   const handleButtonEdit = () => {
     setFormEdit(!formEdit);
   };
@@ -26,29 +36,11 @@ export default function Tabla({
       [e.target.name]: e.target.value,
     });
   };
-  const handleEditSolicitud = async (solicitudId) => {
-    try {
-      const solicitud = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json","token": token },
-        body: JSON.stringify(datos),
-      };
-      await fetch(
-        `http://localhost:8000/api/solicitudes/${solicitudId}`,
-        solicitud
-      );
-      alert("estado actualizado");
-      Solicitud();
-    } catch (error) {
-      console.log(error);
-    }
-    setFormEdit(false);
-  };
 
   const downloadDocument = async (idUser) => {
     const requestDocument = {
       method: "GET",
-      headers:{token}
+      headers: { token },
     };
 
     await fetch(`http://localhost:8000/api/index/${idUser}`, requestDocument)
@@ -115,11 +107,11 @@ export default function Tabla({
           <Td textAlign={"center"}>
             {vinculo.link ? (
               <>
-              <Button type="submit">
-
-                  <a href={vinculo.link}><AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload></a>
-              </Button>
-                
+                <Button type="submit">
+                  <a href={vinculo.link}>
+                    <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
+                  </a>
+                </Button>
               </>
             ) : (
               <>
@@ -136,7 +128,10 @@ export default function Tabla({
           <Td display={"flex"} gap={"10px"} justifyContent="center">
             <Button
               type="submit"
-              onClick={() => handleEditSolicitud(solicitud.id)}
+              onClick={() => {
+                upDateSolicitud({ id: solicitud.id, body: datos, token });
+                setFormEdit(false);
+              }}
               title="Confirmar"
             >
               <FiEdit className="edit" />
@@ -169,11 +164,11 @@ export default function Tabla({
           <Td textAlign={"center"}>
             {vinculo.link ? (
               <>
-              <Button type="submit">
-
-                  <a href={vinculo.link}><AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload></a>
-              </Button>
-                
+                <Button type="submit">
+                  <a href={vinculo.link}>
+                    <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
+                  </a>
+                </Button>
               </>
             ) : (
               <>
@@ -190,7 +185,13 @@ export default function Tabla({
           <Td display={"flex"} gap={"10px"}>
             <Button
               type="submit"
-              onClick={() => aprobarState(solicitud.id, solicitud.estado)}
+              onClick={() =>
+                upDateState({
+                  id: solicitud.id,
+                  estado: solicitud.estado,
+                  token,
+                })
+              }
               title="Aprobar/Desaprobar Solicitud"
             >
               {solicitud.estado ? (
@@ -208,7 +209,7 @@ export default function Tabla({
             </Button>
             <Button
               type="submit"
-              onClick={() => deleteID(solicitud.id)}
+              onClick={() => deleteID({ id: solicitud.id, token })}
               title="Eliminar Solicitud"
             >
               <MdDelete className="delete" />

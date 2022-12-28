@@ -13,59 +13,25 @@ import "./admin.css";
 import Tabla from "./tabla";
 
 export default function Admin() {
-  const [solicitado, setSolicitado] = useState([]);
-  const [user, setUser] = useState(null);
-  const datosUser  = JSON.parse(localStorage.getItem('user'))
-  const {data:allSolicitudes,isError,error,isSuccess}=useGetAllSolicitudesQuery(datosUser.token);
-  if (isError)return console.log(error);
-  
-  const deleteID = async (deleteID) => {
-    try {
-      const request = {
-        method: "DELETE",
-        headers: {
-          "token": datosUser.token,
-        }
-      };
-      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, request);
-      alert("solicitud eliminada");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const aprobarState = async (solicitudId, solicitadoEstado) => {
-    try {
-      const { token } = user;
-      const solicitud = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json","token":user?.token },
-        body: JSON.stringify({
-          estado: !solicitadoEstado,
-          token,
-        }),
-      };
-      await fetch(
-        `http://localhost:8000/api/solicitudes/${solicitudId}`,
-        solicitud
-      );
-      alert("estado actualizado");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(  () => {
-    const algo = ()=>{
-      if (isSuccess) {
-        console.log(allSolicitudes);
-        setSolicitado(allSolicitudes);
-      }
+  const [dataSolicitudes, setDataSolicitudes] = useState([]);
+  const datosUser = JSON.parse(localStorage.getItem("user"));
+  const {
+    data: allSolicitudes,
+    isError,
+    error,
+    isSuccess,
+  } = useGetAllSolicitudesQuery(datosUser.token);
+  if (isError) return console.log(error);
 
-    }
-    algo();
+  useEffect(() => {
+    const obtenerTodaSolicitud = () => {
+      if (isSuccess) {
+        setDataSolicitudes(allSolicitudes);
+      }
+    };
+    obtenerTodaSolicitud();
   }, [allSolicitudes]);
 
-    
- 
   return (
     <Box height={"95vh"} p="10px" justifyContent="center" alignItems="center">
       <Box
@@ -97,17 +63,15 @@ export default function Admin() {
               </Tr>
             </Thead>
             <Tbody>
-              {solicitado.map((solicitud) => {
+              {dataSolicitudes.map((solicitud) => {
                 return (
                   <Tabla
                     key={solicitud.id}
                     solicitud={solicitud}
-                    deleteID={deleteID}
-                    aprobarState={aprobarState}
                     token={datosUser.token}
                   />
                 );
-              })} 
+              })}
             </Tbody>
           </Table>
         </TableContainer>
