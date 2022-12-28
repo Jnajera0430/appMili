@@ -21,13 +21,15 @@ import TablaEnvUser from "../TablaDeEnvio/tabla-env-user";
 import "./forms.css";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
+import {
+  useGetSolicitudesByIdUserQuery,
+  useGetUserMySelfQuery,
+} from "../../app/appMiliSlice";
 
-const options = [{ value: "F", label: "F" }];
-
+const userDatos = JSON.parse(localStorage.getItem("user"));
 function Form() {
   const inputFile = document.getElementById("fileUser");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const dispatch = useDispatch();
   const [alerSoliEnv, setAlerSoliEnv] = useState(false);
   const [docuElimi, setDocuElimi] = useState(false);
   const [solicitado, setSolicitado] = useState([]);
@@ -43,7 +45,24 @@ function Form() {
     sexo: undefined,
     userFile: undefined,
   });
-  const [userLogin, setUserLogin]=useState({});
+  const {
+    data: dataMySelf,
+    isError: isErrorMySelf,
+    error: errorMySelf,
+    isSuccess: isSuccessMySelf,
+  } = useGetUserMySelfQuery(userDatos.token);
+  if (isErrorMySelf) return console.log(errorMySelf);
+  const {
+    data: dataSolUser,
+    isError: isErrorSolUser,
+    error: errorSolUser,
+    isSuccess: isSuccessSoliUser,
+  } = useGetSolicitudesByIdUserQuery({
+    idUser: user.idUser,
+    token: userDatos.token,
+  });
+  if (isErrorSolUser)return console.log(errorSolUser);
+  
   const handleChangeFile = (e) => {
     setFileUser(e.target.files[0]);
 
@@ -74,68 +93,51 @@ function Form() {
   const downloadDocument = async (idUser) => {
     const requestDocument = {
       method: "GET",
-      headers:{"token":userLogin.token}
+      headers: { token: userDatos.token },
     };
 
-     fetch(
-      `http://localhost:8000/api/index/${idUser}`,
-      requestDocument
-    )
+    fetch(`http://localhost:8000/api/index/${idUser}`, requestDocument)
       .then((response) => response.json())
       .then((data) => setVinculo(data));
-  };
-  //Esta funcion esta funcionando correctamente (Soolicitud de solicitudes).
-  const solicitud = async (idUser) => {
-    const request = {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json","token":userLogin.token},
-    };
-    let result = await fetch(
-      `http://localhost:8000/api/solicitudes/${idUser}`,
-      request
-    )
-    let dato = await result.json();
-    setSolicitado(dato);
   };
 
   const handleSubmitUser = async (e) => {
     e.preventDefault();
-    solicitud(user.idUser);
     //Editar Usuarios Funcionando
-    const users = {
+/*     const users = {
       method: "PUT",
-      headers: { "Content-Type": "application/json","token":userLogin.token},
+      headers: { "Content-Type": "application/json", token: userDatos.token },
       body: JSON.stringify(datos),
     };
     fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
-    
+ */
     //Envio del formData funcionando
     const formdata = new FormData();
     formdata.append("file", fileUser);
-    
+
     const requestFile = {
       method: "POST",
-      headers:{"token":userLogin.token},
+      headers: { token: userDatos.token },
       body: formdata,
     };
     fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
-    .then((response) => response.json())
-    .catch((err) => err.json);
-    
+      .then((response) => response.json())
+      .catch((err) => err.json);
+
     /*  alert("datos guardados"); */
-    
+
     setAlerSoliEnv(true);
 
     e.target.reset();
   };
-//Eliminar documento funciona correctamente
+  //Eliminar documento funciona correctamente
   const handleDeleteDocument = async (idUser) => {
     try {
       await fetch(`http://localhost:8000/api/index/${idUser}`, {
-        method: "DELETE",headers:{"token":userLogin.token}
+        method: "DELETE",
+        headers: { token: userDatos.token },
       });
       setDocuElimi(true);
-      solicitud(user.idUser);
       setTimeout(() => {
         window.location.reload();
       }, 700);
@@ -144,50 +146,25 @@ function Form() {
     }
   };
 
-  const deleteID = async (deleteID) => {
-    try {
-      await fetch(`http://localhost:8000/api/solicitudes/${deleteID}`, {
-        method: "DELETE",headers:{"token":userLogin.token}
-      });
-      /* alert("solicitud eliminada"); */
-      solicitud(user.idUser);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    if (isSuccessMySelf) {
+      setUser(dataMySelf);
     }
-  };
-
-  const userMySelf =()=>{
-    const  payload = JSON.parse(localStorage.getItem('user'));
-    setUserLogin(payload);
-    const requesInit = {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json","token":payload.token  },
-      
-    };
-    fetch("http://localhost:8000/api/users/myself", requesInit)
-      .then((response) => response.json())
-      .then((res) => setUser(res))
-      .catch((err) => err.json);
-  }
-
+  }, [dataMySelf]);
   useEffect(() => {
-    userMySelf();
-    solicitud(user.idUser);
-  }, []);
-
-  useEffect(() => {
-    downloadDocument(user.idUser);
-    solicitud(user.idUser);
-  }, [user]);
+    if (isSuccessSoliUser) {
+      setSolicitado(dataSolUser);
+    }
+  }, [dataSolUser]);
   return (
     <>
-      <Box display={"flex"} w="80%" justifyContent={"flex-end"}     >
+      <Box display={"flex"} w="80%" justifyContent={"flex-end"}>
         <Button onClick={onOpen} colorScheme="green">
           SOLICITAR PRESTAMO
         </Button>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered >
-        <ModalOverlay max-width="none" w={"100%"} >
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay max-width="none" w={"100%"}>
           {alerSoliEnv ? (
             <Box
               w={"98%"}
@@ -195,7 +172,7 @@ function Form() {
               justifyContent={"end"}
               height="100px"
               alignItems={"center"}
-              boxShadow= "0px 0px 20px #000"
+              boxShadow="0px 0px 20px #000"
             >
               <Alert
                 status="success"
@@ -226,7 +203,11 @@ function Form() {
             </Box>
           ) : null}
         </ModalOverlay>
-        <ModalContent width="auto" maxWidth="none" boxShadow= "0px 0px 20px #000">
+        <ModalContent
+          width="auto"
+          maxWidth="none"
+          boxShadow="0px 0px 20px #000"
+        >
           <ModalBody>
             <Box
               display="flex"
@@ -235,7 +216,7 @@ function Form() {
               p="15px"
             >
               <ModalHeader textAlign={"center"}>
-                SOLICITUD DE PRESTAMO 
+                SOLICITUD DE PRESTAMO
               </ModalHeader>
               <ModalCloseButton />
               <Box>
@@ -337,7 +318,6 @@ function Form() {
                           _placeholder={{ color: "inherit" }}
                           defaultValue={user.sexo ? user.sexo : ""}
                           disabled={user.sexo ? true : false}
-                          options={options}
                           onChange={handleChange}
                         >
                           <option value="M">M</option>
@@ -397,7 +377,7 @@ function Form() {
                                   accept="pdf/png"
                                   id="fileUser"
                                 />
-                            {/*     <div className="file-select" id="src-file1">
+                                {/*     <div className="file-select" id="src-file1">
                                   <input
                                     type="file"
                                     borderColor="teal"
@@ -434,7 +414,8 @@ function Form() {
               <br />
               <Box>
                 <Solicitud
-                  handleSubmitUser={handleSubmitUser}
+                  datosUserEdit={datos}
+                  datosUser={user}
                   downloadDocument={downloadDocument}
                 />
               </Box>
@@ -444,9 +425,6 @@ function Form() {
       </Modal>
       <TablaEnvUser
         solicitado={solicitado}
-        deleteID={deleteID}
-        funcionSolicitud={solicitud}
-        idUser={user.idUser}
       />
     </>
   );

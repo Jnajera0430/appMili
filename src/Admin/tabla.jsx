@@ -9,7 +9,7 @@ import {
   useUpDateSolicitudByIdMutation,
   useUpDateStateBySolicitudMutation,
 } from "../app/appMiliSlice";
-export default function Tabla({ solicitud, Solicitud, token }) {
+export default function Tabla({ solicitud, token }) {
   const { user } = solicitud;
   const [formEdit, setFormEdit] = useState(false);
   const [datos, setDatos] = useState({});

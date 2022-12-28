@@ -13,9 +13,6 @@ import {
 import Celdas from "./celdas";
 export const TablaEnvUser = ({
   solicitado,
-  deleteID,
-  funcionSolicitud,
-  idUser,
 }) => {
   const [datosSolicitud, setDatosSolicitud] = useState([]);
   const [eliminaSoli, setEliminaSoli] = useState(false);
@@ -55,15 +52,11 @@ export const TablaEnvUser = ({
               ) : (
                 <>
                   {datosSolicitud.map((solicitud, _, arrSolicitud) => {
-                    console.log(datosSolicitud);
                     return (
                       <Celdas
                         key={solicitud.id}
-                        solicitud={solicitud}
-                        deleteID={deleteID}
-                        funcionSolicitud={funcionSolicitud}
+                        solicitud={solicitud}                       
                         arrSolicitud={arrSolicitud}
-                        idUser={idUser}
                         eliminaSoli={eliminaSoli}
                         setEliminaSoli={setEliminaSoli}
                       />

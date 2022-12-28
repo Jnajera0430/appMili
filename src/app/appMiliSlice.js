@@ -7,7 +7,7 @@ export const restApi = createApi({
     baseUrl: "http://localhost:8000/api",
   }),
 
-  tagTypes: ["refreshUsers", "refreshSolicitudes"],
+  tagTypes: ["refreshUsers", "refreshSolicitudes", "refreshSolicitudesForUser"],
 
   keepUnusedDataFor: 3,
   refetchOnMountOrArgChange: true,
@@ -25,6 +25,21 @@ export const restApi = createApi({
         url: "/users",
         method: "PATCH",
         body: dataUser,
+      }),
+    }),
+    upDateUser: builder.mutation({
+      query: ({ idUser, token, datos }) => ({
+        url: `users/${idUser}`,
+        headers: { "Content-Type": "application/json", token: token },
+        method: "PUT",
+        body: JSON.stringify(datos),
+      }),
+    }),
+    getUserMySelf: builder.query({
+      query: (token) => ({
+        url: "users/myself",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", token },
       }),
     }),
 
@@ -54,38 +69,81 @@ export const restApi = createApi({
       providesTags: ["refreshSolicitudes"],
     }),
 
+    getSolicitudesByIdUser: builder.query({
+      query: (dataSolicitud) => ({
+        url: `solicitudes/${dataSolicitud.idUser}`,
+        headers: {
+          "Content-Type": "application/json",
+          token: dataSolicitud.token,
+        },
+        method: "PATCH",
+      }),
+      providesTags: ["refreshSolicitudesForUser"],
+    }),
+
     deleteSolicitudById: builder.mutation({
       query: (datosForDeleteSolicitud) => ({
         url: `solicitudes/${datosForDeleteSolicitud.id}`,
-        headers: { "Content-Type": "application/json", token:datosForDeleteSolicitud.token },
+        headers: {
+          "Content-Type": "application/json",
+          token: datosForDeleteSolicitud.token,
+        },
         method: "DELETE",
       }),
-      invalidatesTags:["refreshSolicitudes"],
+      invalidatesTags: ["refreshSolicitudes"],
     }),
 
     upDateStateBySolicitud: builder.mutation({
-      query:(DataForEditStateSolicitud)=>({
-        url:`solicitudes/${DataForEditStateSolicitud.id}`,
-        method:'PUT',
-        headers: {"Content-Type": "application/json", token:DataForEditStateSolicitud.token},
-        body:JSON.stringify({
-          estado:!DataForEditStateSolicitud.estado
-        })
+      query: (DataForEditStateSolicitud) => ({
+        url: `solicitudes/${DataForEditStateSolicitud.id}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: DataForEditStateSolicitud.token,
+        },
+        body: JSON.stringify({
+          estado: !DataForEditStateSolicitud.estado,
+        }),
       }),
-      invalidatesTags:["refreshSolicitudes"]
+      invalidatesTags: ["refreshSolicitudes"],
     }),
     upDateSolicitudById: builder.mutation({
-      query:(DataForEditSolicitud)=>({
-        url:`solicitudes/${DataForEditSolicitud.id}`,
-        method:'PUT',
-        headers: {"Content-Type": "application/json", token:DataForEditSolicitud.token},
-        body:JSON.stringify(DataForEditSolicitud.body)
+      query: (DataForEditSolicitud) => ({
+        url: `solicitudes/${DataForEditSolicitud.id}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: DataForEditSolicitud.token,
+        },
+        body: JSON.stringify(DataForEditSolicitud.body),
       }),
-      invalidatesTags:["refreshSolicitudes"]
-    })
+      invalidatesTags: ["refreshSolicitudes", "refreshSolicitudesForUser"],
+    }),
 
+    deleteSolicitudByIdUser: builder.mutation({
+      query: (DataDeleteSolicitud) => ({
+        url: `solicitudes/${DataDeleteSolicitud.solicitudId}`,
+        headers: {
+          "Content-Type": "application/json",
+          token: DataDeleteSolicitud.token,
+        },
+        method: "DELETE",
+      }),
+      invalidatesTags: ["refreshSolicitudesForUser"],
+    }),
 
-
+    createNewSolicitud: builder.mutation({
+      query: ({ token, datosSolicitud }) => ({
+        url: "solicitudes",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token,
+        },
+        body: JSON.stringify(datosSolicitud),
+      }),
+      invalidatesTags: ["refreshSolicitudesForUser", "refreshSolicitudes"],
+    }),
   }),
 });
 
@@ -93,9 +151,14 @@ export const {
   useGetUserQuery,
   useEditUserMutation,
   useCreateUserMutation,
+  useUpDateUserMutation,
+  useGetUserMySelfQuery,
   useGetUserCheckedQuery,
   useGetAllSolicitudesQuery,
+  useCreateNewSolicitudMutation,
   useUpDateSolicitudByIdMutation,
   useDeleteSolicitudByIdMutation,
-  useUpDateStateBySolicitudMutation
+  useGetSolicitudesByIdUserQuery,
+  useUpDateStateBySolicitudMutation,
+  useDeleteSolicitudByIdUserMutation,
 } = restApi;
