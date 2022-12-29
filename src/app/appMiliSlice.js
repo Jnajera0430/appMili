@@ -7,7 +7,12 @@ export const restApi = createApi({
     baseUrl: "http://localhost:8000/api",
   }),
 
-  tagTypes: ["refreshUsers", "refreshSolicitudes", "refreshSolicitudesForUser"],
+  tagTypes: [
+    "refreshUsers",
+    "refreshDatosMySelf",
+    "refreshSolicitudes",
+    "refreshSolicitudesForUser",
+  ],
 
   keepUnusedDataFor: 3,
   refetchOnMountOrArgChange: true,
@@ -41,6 +46,7 @@ export const restApi = createApi({
         method: "PATCH",
         headers: { "Content-Type": "application/json", token },
       }),
+      providesTags: ["refreshDatosMySelf", "refreshUsers"],
     }),
 
     createUser: builder.mutation({
@@ -144,17 +150,52 @@ export const restApi = createApi({
       }),
       invalidatesTags: ["refreshSolicitudesForUser", "refreshSolicitudes"],
     }),
+    sendDocumentFile: builder.mutation({
+      query: ({ idUser, token, datosSolicitud }) => ({
+        url: `index/${idUser}`,
+        method: "POST",
+        headers: {
+          token,
+        },
+        body: datosSolicitud,
+      }),
+      invalidatesTags: [
+        "refreshSolicitudesForUser",
+        "refreshSolicitudes",
+        "refreshDatosMySelf",
+        "refreshUsers",
+      ],
+    }),
+    downLoadDocument: builder.query({
+      query:({idUser,token})=>({
+        url:`index/${idUser}`,
+        method:'GET',
+        headers:{token},
+      }),
+      
+    }),
+    deleteDocument: builder.mutation({
+      query:({idUser, token})=>({
+        url:`index/${idUser}`,
+        method:'DELETE',
+        headers:{token}
+      }),
+      invalidatesTags:["refreshDatosMySelf","refreshSolicitudesForUser","refreshUsers","refreshSolicitudes"]
+    })
   }),
 });
 
 export const {
   useGetUserQuery,
   useEditUserMutation,
+  useGetUserMySelfQuery,
   useCreateUserMutation,
   useUpDateUserMutation,
-  useGetUserMySelfQuery,
   useGetUserCheckedQuery,
+  useDownLoadDocumentQuery,
   useGetAllSolicitudesQuery,
+  useDeleteDocumentMutation,
+  useSendDocumentFileMutation,
   useCreateNewSolicitudMutation,
   useUpDateSolicitudByIdMutation,
   useDeleteSolicitudByIdMutation,

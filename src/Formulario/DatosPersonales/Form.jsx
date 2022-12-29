@@ -22,6 +22,8 @@ import "./forms.css";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import { VscError } from "react-icons/vsc";
 import {
+  useDeleteDocumentMutation,
+  useDownLoadDocumentQuery,
   useGetSolicitudesByIdUserQuery,
   useGetUserMySelfQuery,
 } from "../../app/appMiliSlice";
@@ -61,8 +63,16 @@ function Form() {
     idUser: user.idUser,
     token: userDatos.token,
   });
-  if (isErrorSolUser)return console.log(errorSolUser);
-  
+  if (isErrorSolUser) return console.log(errorSolUser);
+  const {
+    data: dataGetLink,
+    isError: isErrorGetLink,
+    error: errorGetLink,
+    isSuccess: isSuccessGetLink,
+  } = useDownLoadDocumentQuery({ idUser: user.idUser, token: userDatos.token });
+  if (isErrorGetLink) console.log(errorGetLink);
+  const[handleDeleteDocument,{isError:isErrorDeleteDoc,error:errorDeleteDoc}] = useDeleteDocumentMutation();
+  if(isErrorDeleteDoc)return console.log(errorDeleteDoc);
   const handleChangeFile = (e) => {
     setFileUser(e.target.files[0]);
 
@@ -90,66 +100,17 @@ function Form() {
       });
     }
   };
-  const downloadDocument = async (idUser) => {
-    const requestDocument = {
-      method: "GET",
-      headers: { token: userDatos.token },
-    };
-
-    fetch(`http://localhost:8000/api/index/${idUser}`, requestDocument)
-      .then((response) => response.json())
-      .then((data) => setVinculo(data));
-  };
-
-  const handleSubmitUser = async (e) => {
-    e.preventDefault();
-    //Editar Usuarios Funcionando
-/*     const users = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", token: userDatos.token },
-      body: JSON.stringify(datos),
-    };
-    fetch(`http://localhost:8000/api/users/${user.idUser}`, users);
- */
-    //Envio del formData funcionando
-    const formdata = new FormData();
-    formdata.append("file", fileUser);
-
-    const requestFile = {
-      method: "POST",
-      headers: { token: userDatos.token },
-      body: formdata,
-    };
-    fetch(`http://localhost:8000/api/index/${user?.idUser}`, requestFile)
-      .then((response) => response.json())
-      .catch((err) => err.json);
-
-    /*  alert("datos guardados"); */
-
-
-    e.target.reset();
-  };
-  //Eliminar documento funciona correctamente
-  const handleDeleteDocument = async (idUser) => {
-    try {
-      await fetch(`http://localhost:8000/api/index/${idUser}`, {
-        method: "DELETE",
-        headers: { token: userDatos.token },
-      });
-      setDocuElimi(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 700);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
-    if (isSuccessMySelf) {
-      setUser(dataMySelf);
-    }
+      if (isSuccessMySelf) {
+        setUser(dataMySelf);
+      }
   }, [dataMySelf]);
+  useEffect(() => {
+    if (isSuccessGetLink) {
+      setVinculo(dataGetLink);
+    }
+  }, [dataGetLink]);
   useEffect(() => {
     if (isSuccessSoliUser) {
       setSolicitado(dataSolUser);
@@ -199,7 +160,7 @@ function Form() {
                 <h1>
                   <b>DATOS PERSONALES</b>
                 </h1>
-                <form onSubmit={handleSubmitUser}>
+                <form>
                   <div className="form-group">
                     <div className="form-group-complet">
                       <div className="items">
@@ -312,24 +273,25 @@ function Form() {
                                   justifyContent="center"
                                   gap={"10px"}
                                 >
-                                  <Button title={`Download ${user.img}`}>
                                     <a href={viculo.link}>
+                                  <Button title={`Download ${user.img}`}>
                                       <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
-                                    </a>
                                   </Button>
+                                    </a>
                                   <Button>
                                     <VscError
                                       color="red"
                                       onClick={() =>
-                                        handleDeleteDocument(user.idUser)
+                                        handleDeleteDocument({idUser:user.idUser,token:userDatos.token})
                                       }
+                                      title='Eliminar documento'
                                     />
                                   </Button>
                                 </Box>
                               </>
                             ) : (
                               <>
-                                <Button onClick={() => downloadDocument()}>
+                                <Button onClick={() => algo()}>
                                   {user.img}
                                 </Button>
                               </>
@@ -382,16 +344,14 @@ function Form() {
                 <Solicitud
                   datosUserEdit={datos}
                   datosUser={user}
-                  downloadDocument={downloadDocument}
+                  fileUser={fileUser}
                 />
               </Box>
             </Box>
           </ModalBody>
         </ModalContent>
       </Modal>
-      <TablaEnvUser
-        solicitado={solicitado}
-      />
+      <TablaEnvUser solicitado={solicitado} />
     </>
   );
 }

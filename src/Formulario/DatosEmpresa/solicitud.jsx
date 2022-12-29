@@ -1,14 +1,11 @@
 import { Input, Button, Box, AlertIcon, Alert } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useCreateNewSolicitudMutation, useUpDateUserMutation } from "../../app/appMiliSlice";
+import { useCreateNewSolicitudMutation, useSendDocumentFileMutation, useUpDateUserMutation } from "../../app/appMiliSlice";
 
-export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
-  console.log(datosUser);
+export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit,fileUser }) => {
   const userDatos = JSON.parse(localStorage.getItem("user"));
-  console.log(userDatos.token);
   const [input, setInput] = useState({});
   const [alerSoliEnv, setAlerSoliEnv] = useState(false);
-  console.log(input);
   const [validaDatos, setValidaDatos] = useState({
     NombreEmpresa: undefined,
     nitEmpresa: undefined,
@@ -21,6 +18,8 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
   if (isErrorEdit)return console.log(errorEditUser);
   const [createNewSolicitud,{isError:isErrorSolNew,error:errorSolNew}] = useCreateNewSolicitudMutation();
   if(isErrorSolNew)return console.log(errorSolNew);
+  const [sendDocumentFile,{isError:isErrorSendFile, error:errorSendFile}] = useSendDocumentFileMutation();
+  if(isErrorSendFile)return console.log(errorSendFile);
   const handleChange = (e) => {
     e.preventDefault();
     setInput({
@@ -83,12 +82,17 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
             e.preventDefault();
             if(datosUserEdit) upDateUser({idUser:datosUser.idUser, token:userDatos.token, datos:datosUserEdit})
             if(input)createNewSolicitud({token:userDatos.token,datosSolicitud:input}); 
-            setTimeout(() => {
+            if(fileUser){
+              const formdata = new FormData();
+              formdata.append("file", fileUser);
+              sendDocumentFile({token:userDatos.token,idUser:datosUser.idUser,datosSolicitud:formdata})
+            }
+              setTimeout(() => {
               setAlerSoliEnv(true);
               setTimeout(() => {
               setAlerSoliEnv(true);
                 window.location.reload()
-              }, 1000);
+              }, 5000);
             },0);
             e.target.reset();
         }}

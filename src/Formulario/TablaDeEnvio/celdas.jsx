@@ -55,6 +55,8 @@ export default function Celdas({
                     defaultValue={solicitud.NombreEmpresa}
                     onChange={handleInputChange}
                     name="NombreEmpresa"
+                    borderColor= "#93dbb4"
+                    textAlign={"center"}
                   />
                 </Td>
                 <Td>
@@ -62,13 +64,19 @@ export default function Celdas({
                     defaultValue={solicitud.nitEmpresa}
                     onChange={handleInputChange}
                     name="nitEmpresa"
+                    borderColor= "#93dbb4"
+                    textAlign={"center"}
+
                   />
                 </Td>
-                <Td>
+                <Td >
                   <Input
                     defaultValue={solicitud.EstadiaEnEmpresa}
                     onChange={handleInputChange}
                     name="EstadiaEnEmpresa"
+                    borderColor= "#93dbb4"
+                    textAlign={"center"}
+
                   />
                 </Td>
                 <Td>
@@ -76,6 +84,8 @@ export default function Celdas({
                     defaultValue={solicitud.Monto}
                     onChange={handleInputChange}
                     name="Monto"
+                    borderColor= "#93dbb4"
+                    textAlign={"center"}
                   />
                 </Td>
                 <Td

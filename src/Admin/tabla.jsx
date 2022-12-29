@@ -56,10 +56,10 @@ export default function Tabla({ solicitud, token }) {
             <Input disabled defaultValue={user.nombre} />
           </Td>
           <Td>
-          <Input disabled defaultValue={user.Apellidos} />
+            <Input disabled defaultValue={user.Apellidos} />
           </Td>
           <Td>
-          <Input disabled defaultValue={user.email} />
+            <Input disabled defaultValue={user.email} />
           </Td>
           <Td>
             <Input disabled defaultValue={user.NumCedula} />
@@ -147,13 +147,13 @@ export default function Tabla({ solicitud, token }) {
         </>
       ) : (
         <>
-          <Td textAlign={"center"}>{user.nombre}</Td>
-          <Td textAlign={"center"}>{user.Apellidos}</Td>
-          <Td textAlign={"center"}>{user.email}</Td>
-          <Td textAlign={"center"}>{user.NumCedula}</Td>
-          <Td textAlign={"center"}>{user.Telefono}</Td>
-          <Td textAlign={"center"}>{user.Edad}</Td>
-          <Td textAlign={"center"}>{user.sexo}</Td>
+          <Td textAlign={"center"}>{user?.nombre}</Td>
+          <Td textAlign={"center"}>{user?.Apellidos}</Td>
+          <Td textAlign={"center"}>{user?.email}</Td>
+          <Td textAlign={"center"}>{user?.NumCedula}</Td>
+          <Td textAlign={"center"}>{user?.Telefono}</Td>
+          <Td textAlign={"center"}>{user?.Edad}</Td>
+          <Td textAlign={"center"}>{user?.sexo}</Td>
           <Td textAlign={"center"}>{solicitud.NombreEmpresa}</Td>
           <Td textAlign={"center"}>{solicitud.nitEmpresa}</Td>
           <Td textAlign={"center"}>{solicitud.EstadiaEnEmpresa}</Td>
@@ -172,9 +172,9 @@ export default function Tabla({ solicitud, token }) {
               </>
             ) : (
               <>
-                {user.img}
+                {user?.img}
                 <Button
-                  onClick={() => downloadDocument(user.idUser)}
+                  onClick={() => downloadDocument(user?.idUser)}
                   background="transparent"
                 >
                   <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
