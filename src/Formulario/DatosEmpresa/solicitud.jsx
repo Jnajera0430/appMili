@@ -56,7 +56,7 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
       <form
         onSubmit={(e) => {
             e.preventDefault();
-            if(datosUserEdit) upDateUser({idUser:datosUser.idUser, token:userDatos.token, datos:datosUserEdit} )
+            if(datosUserEdit) upDateUser({idUser:datosUser.idUser, token:userDatos.token, datos:datosUserEdit})
             if(input)createNewSolicitud({token:userDatos.token,datosSolicitud:input}); 
             e.target.reset();
         }}
