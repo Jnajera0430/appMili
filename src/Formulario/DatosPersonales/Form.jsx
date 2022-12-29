@@ -70,9 +70,12 @@ function Form() {
     error: errorGetLink,
     isSuccess: isSuccessGetLink,
   } = useDownLoadDocumentQuery({ idUser: user.idUser, token: userDatos.token });
-  if (isErrorGetLink) console.log(errorGetLink);
-  const[handleDeleteDocument,{isError:isErrorDeleteDoc,error:errorDeleteDoc}] = useDeleteDocumentMutation();
-  if(isErrorDeleteDoc)return console.log(errorDeleteDoc);
+  if (isErrorGetLink)  console.log(errorGetLink);
+  const [
+    handleDeleteDocument,
+    { isError: isErrorDeleteDoc, error: errorDeleteDoc },
+  ] = useDeleteDocumentMutation();
+  if (isErrorDeleteDoc) return console.log(errorDeleteDoc);
   const handleChangeFile = (e) => {
     setFileUser(e.target.files[0]);
 
@@ -93,7 +96,6 @@ function Form() {
       e.target.name == "Edad" ||
       e.target.name == "sexo"
     ) {
-      /* console.log(e.target.value == 0 ? "vacio " : "lleno"); */
       setValidaDatos({
         ...validaDatos,
         [e.target.name]: e.target.value.length > 0 ? "" : "value is required",
@@ -102,9 +104,9 @@ function Form() {
   };
 
   useEffect(() => {
-      if (isSuccessMySelf) {
-        setUser(dataMySelf);
-      }
+    if (isSuccessMySelf) {
+      setUser(dataMySelf);
+    }
   }, [dataMySelf]);
   useEffect(() => {
     if (isSuccessGetLink) {
@@ -273,19 +275,21 @@ function Form() {
                                   justifyContent="center"
                                   gap={"10px"}
                                 >
-                                    <a href={viculo.link}>
-                                  <Button title={`Download ${user.img}`}>
+                                  <a href={viculo.link}>
+                                    <Button title={`Download ${user.img}`}>
                                       <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
-                                  </Button>
-                                    </a>
-                                  <Button>
-                                    <VscError
-                                      color="red"
-                                      onClick={() =>
-                                        handleDeleteDocument({idUser:user.idUser,token:userDatos.token})
-                                      }
-                                      title='Eliminar documento'
-                                    />
+                                    </Button>
+                                  </a>
+                                  <Button
+                                    onClick={() =>
+                                      handleDeleteDocument({
+                                        idUser: user.idUser,
+                                        token: userDatos.token,
+                                      })
+                                    }
+                                    title="Eliminar documento"
+                                  >
+                                    <VscError color="red" />
                                   </Button>
                                 </Box>
                               </>
