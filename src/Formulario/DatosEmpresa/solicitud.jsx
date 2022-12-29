@@ -90,9 +90,8 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit,fileUser }
               setTimeout(() => {
               setAlerSoliEnv(true);
               setTimeout(() => {
-              setAlerSoliEnv(true);
-                window.location.reload()
-              }, 5000);
+              setAlerSoliEnv(false);               
+              }, 1000);
             },0);
             e.target.reset();
         }}

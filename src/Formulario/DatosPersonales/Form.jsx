@@ -64,12 +64,13 @@ function Form() {
     token: userDatos.token,
   });
   if (isErrorSolUser) return console.log(errorSolUser);
+  
   const {
     data: dataGetLink,
     isError: isErrorGetLink,
     error: errorGetLink,
     isSuccess: isSuccessGetLink,
-  } = useDownLoadDocumentQuery({ idUser: user.idUser, token: userDatos.token });
+  } = useDownLoadDocumentQuery({ idUser: user?.idUser, token: userDatos?.token });
   if (isErrorGetLink)  console.log(errorGetLink);
   const [
     handleDeleteDocument,
@@ -112,7 +113,7 @@ function Form() {
     if (isSuccessGetLink) {
       setVinculo(dataGetLink);
     }
-  }, [dataGetLink]);
+  }, [dataGetLink,dataMySelf]);
   useEffect(() => {
     if (isSuccessSoliUser) {
       setSolicitado(dataSolUser);
@@ -267,7 +268,7 @@ function Form() {
                       <div className="items">
                         {user.img ? (
                           <>
-                            {viculo.link ? (
+                            {viculo?.link ? (
                               <>
                                 <label>Descarga tu documento</label>
                                 <Box

@@ -6,6 +6,7 @@ import { VscError } from "react-icons/vsc";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import {
   useDeleteSolicitudByIdMutation,
+  useDownLoadDocumentQuery,
   useUpDateSolicitudByIdMutation,
   useUpDateStateBySolicitudMutation,
 } from "../app/appMiliSlice";
@@ -26,7 +27,13 @@ export default function Tabla({ solicitud, token }) {
   const [upDateSolicitud, { isError: isErrorEditSol, error: errorEditSol }] =
     useUpDateSolicitudByIdMutation();
   if (isErrorEditSol) return console.log(errorEditSol);
-
+  const {
+    data: dataGetLink,
+    isError: isErrorGetLink,
+    error: errorGetLink,
+    isSuccess: isSuccessGetLink,
+  } = useDownLoadDocumentQuery({ idUser: user.idUser, token });
+  if (isErrorGetLink) console.log(errorGetLink);
   const handleButtonEdit = () => {
     setFormEdit(!formEdit);
   };
@@ -37,7 +44,7 @@ export default function Tabla({ solicitud, token }) {
     });
   };
 
-  const downloadDocument = async (idUser) => {
+  /* const downloadDocument = async (idUser) => {
     const requestDocument = {
       method: "GET",
       headers: { token },
@@ -46,8 +53,10 @@ export default function Tabla({ solicitud, token }) {
     await fetch(`http://localhost:8000/api/index/${idUser}`, requestDocument)
       .then((response) => response.json())
       .then((data) => setVinculo(data));
-  };
-
+  }; */
+  useEffect(() => {
+    if (isSuccessGetLink) setVinculo(dataGetLink);
+  }, [dataGetLink]);
   return (
     <Tr>
       {formEdit ? (
@@ -162,23 +171,19 @@ export default function Tabla({ solicitud, token }) {
             {solicitud.estado ? <b>Aprobado</b> : <b> No aprobado</b>}
           </Td>
           <Td textAlign={"center"}>
-            {vinculo.link ? (
+            {vinculo?.link ? (
               <>
-                <Button type="submit">
-                  <a href={vinculo.link}>
+                <Button type="submit" title="Descargar documento">
+                  {user?.img}
+                  <a href={vinculo?.link}>
                     <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
                   </a>
                 </Button>
               </>
             ) : (
               <>
-                {user?.img}
-                <Button
-                  onClick={() => downloadDocument(user?.idUser)}
-                  background="transparent"
-                >
-                  <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
-                </Button>
+                <span>no hay nada en bd</span>
+                <AiOutlineCloudDownload color="blue"></AiOutlineCloudDownload>
               </>
             )}
           </Td>
