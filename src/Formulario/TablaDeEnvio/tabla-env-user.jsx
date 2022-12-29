@@ -11,9 +11,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import Celdas from "./celdas";
-export const TablaEnvUser = ({
-  solicitado,
-}) => {
+export const TablaEnvUser = ({ solicitado }) => {
   const [datosSolicitud, setDatosSolicitud] = useState([]);
   const [eliminaSoli, setEliminaSoli] = useState(false);
   useEffect(() => {
@@ -21,6 +19,32 @@ export const TablaEnvUser = ({
   }, [solicitado]);
   console.log();
   return (
+    <>
+    {eliminaSoli ? (
+          <Box
+            w={"98%"}
+            display="flex"
+            justifyContent={"end"}
+            height="100px"
+            alignItems={"center"}
+            position="absolute"
+            top={"10px"}
+          >
+            <Alert
+              status="success"
+              variant="solid"
+              top={"70%"}
+              height={10}
+              w={"auto"}
+            >
+              <AlertIcon />
+              Solicitud eliminada con exito!
+            </Alert>
+          </Box>
+        ) : (
+          <></>
+        )}
+  
     <Box p="10px" justifyContent="center" alignItems="center">
       <Box
         display="flex"
@@ -28,17 +52,29 @@ export const TablaEnvUser = ({
         justifyContent="center"
         alignItems="center"
       >
-          <b>TUS SOLICITUDES</b>
-        <TableContainer w={"80%"}     border= "1px solid" boxShadow={"0px 0px 8px  #5a5a5a"}>
+        <b>TUS SOLICITUDES</b>
+        <TableContainer w={"80%"} boxShadow={"0px 0px 8px  #5a5a5a"}>
           <Table>
-            <Thead  bg="#93dbb4"> 
-              <Tr >
-                <Th textAlign="center" color="black">Nombre Empresa</Th>
-                <Th textAlign="center" color="black">Nit Empresa</Th>
-                <Th textAlign="center" color="black">Estadia en Empresa</Th>
-                <Th textAlign="center" color="black">Monto</Th>
-                <Th textAlign="center" color="black">Estado</Th>
-                <Th textAlign="center" color="black">Acciones</Th>
+            <Thead bg="#93dbb4">
+              <Tr>
+                <Th textAlign="center" color="black">
+                  Nombre Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Nit Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Estadia en Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Monto
+                </Th>
+                <Th textAlign="center" color="black">
+                  Estado
+                </Th>
+                <Th textAlign="center" color="black">
+                  Acciones
+                </Th>
               </Tr>
             </Thead>
             <Thead width="100%" textAlign={"center"}>
@@ -55,7 +91,7 @@ export const TablaEnvUser = ({
                     return (
                       <Celdas
                         key={solicitud.id}
-                        solicitud={solicitud}                       
+                        solicitud={solicitud}
                         arrSolicitud={arrSolicitud}
                         eliminaSoli={eliminaSoli}
                         setEliminaSoli={setEliminaSoli}
@@ -67,30 +103,10 @@ export const TablaEnvUser = ({
             </Tbody>
           </Table>
         </TableContainer>
-        {eliminaSoli ? (
-          <Box
-            w={"98%"}
-            display="flex"
-            justifyContent={"end"}
-            height="100px"
-            alignItems={"center"}
-          >
-            <Alert
-              status="success"
-              variant="solid"
-              top={"10px"}
-              height={10}
-              w={"auto"}
-            >
-              <AlertIcon />
-              Solicitud eliminada con exito!
-            </Alert>
-          </Box>
-        ) : (
-          <></>
-        )}
+        
       </Box>
     </Box>
+    </>
   );
 };
 

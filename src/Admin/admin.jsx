@@ -40,26 +40,53 @@ export default function Admin() {
         justifyContent="center"
         alignItems="center"
       >
-        <TableContainer border="1px solid black">
-          <p>Lista de solicitudes de creditos</p>
-          <hr />
+        <b>Lista de solicitudes de creditos</b>
+        <TableContainer boxShadow={"0px 0px 8px  #5a5a5a"}>
           <Table size="sm">
-            <Thead>
+            <Thead bg="#93dbb4">
               <Tr>
-                <Th textAlign="center">Nombre</Th>
-                <Th textAlign="center">Email</Th>
-                <Th textAlign="center">Apellidos</Th>
-                <Th textAlign="center">C.C</Th>
-                <Th textAlign="center">Telefono</Th>
-                <Th textAlign="center">Edad</Th>
-                <Th textAlign="center">Sexo</Th>
-                <Th textAlign="center">Nombre Empresa</Th>
-                <Th textAlign="center">Nit Empresa</Th>
-                <Th textAlign="center">Estadia en Empresa</Th>
-                <Th textAlign="center">Monto</Th>
-                <Th textAlign="center">Estado</Th>
-                <Th textAlign="center">Documento</Th>
-                <Th textAlign="center">Acciones</Th>
+                <Th textAlign="center" color="black">
+                  Nombre
+                </Th>
+                <Th textAlign="center" color="black">
+                  Apellidos
+                </Th>
+                <Th textAlign="center" color="black">
+                  Email
+                </Th>
+                <Th textAlign="center" color="black">
+                  C.C
+                </Th>
+                <Th textAlign="center" color="black">
+                  Telefono
+                </Th>
+                <Th textAlign="center" color="black">
+                  Edad
+                </Th>
+                <Th textAlign="center" color="black">
+                  Sexo
+                </Th>
+                <Th textAlign="center" color="black">
+                  Nombre Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Nit Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Estadia en Empresa
+                </Th>
+                <Th textAlign="center" color="black">
+                  Monto
+                </Th>
+                <Th textAlign="center" color="black">
+                  Estado
+                </Th>
+                <Th textAlign="center" color="black">
+                  Documento
+                </Th>
+                <Th textAlign="center" color="black">
+                  Acciones
+                </Th>
               </Tr>
             </Thead>
             <Tbody>

@@ -1,4 +1,4 @@
-import { Input, Button, Box } from "@chakra-ui/react";
+import { Input, Button, Box, AlertIcon, Alert } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useCreateNewSolicitudMutation, useUpDateUserMutation } from "../../app/appMiliSlice";
 
@@ -7,6 +7,7 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
   const userDatos = JSON.parse(localStorage.getItem("user"));
   console.log(userDatos.token);
   const [input, setInput] = useState({});
+  const [alerSoliEnv, setAlerSoliEnv] = useState(false);
   console.log(input);
   const [validaDatos, setValidaDatos] = useState({
     NombreEmpresa: undefined,
@@ -48,6 +49,30 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
 
   return (
     <Box width="auto">
+      {alerSoliEnv ? (
+            <Box
+              w={"80%"}
+              display="flex"
+              justifyContent={"end"}
+              height="100px"
+              alignItems={"center"}
+              position="fixed"
+              top={"40px"}
+            >
+              <Alert
+                status="success"
+                variant="solid"
+                top={"10px"}
+                height={10}
+                w={"auto"}
+              >
+                <AlertIcon />
+                Solicitud generada con exito
+              </Alert>
+            </Box>
+          ) : (
+            <></>
+          )}
       <header>
         <h1>
           <b>REQUERMIENTOS DE PRESTAMO</b>
@@ -58,6 +83,13 @@ export const Solicitud = ({ datosUser, downloadDocument,datosUserEdit }) => {
             e.preventDefault();
             if(datosUserEdit) upDateUser({idUser:datosUser.idUser, token:userDatos.token, datos:datosUserEdit} )
             if(input)createNewSolicitud({token:userDatos.token,datosSolicitud:input}); 
+            setTimeout(() => {
+              setAlerSoliEnv(true);
+              setTimeout(() => {
+              setAlerSoliEnv(true);
+                window.location.reload()
+              }, 1000);
+            },0);
             e.target.reset();
         }}
       >

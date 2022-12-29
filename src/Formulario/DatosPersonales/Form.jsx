@@ -126,7 +126,6 @@ function Form() {
 
     /*  alert("datos guardados"); */
 
-    setAlerSoliEnv(true);
 
     e.target.reset();
   };
@@ -165,29 +164,6 @@ function Form() {
       </Box>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay max-width="none" w={"100%"}>
-          {alerSoliEnv ? (
-            <Box
-              w={"98%"}
-              display="flex"
-              justifyContent={"end"}
-              height="100px"
-              alignItems={"center"}
-              boxShadow="0px 0px 20px #000"
-            >
-              <Alert
-                status="success"
-                variant="solid"
-                top={"10px"}
-                height={10}
-                w={"auto"}
-              >
-                <AlertIcon />
-                Solicitud generada con exito
-              </Alert>
-            </Box>
-          ) : (
-            <></>
-          )}
           {docuElimi ? (
             <Box
               w={"98%"}
@@ -377,16 +353,6 @@ function Form() {
                                   accept="pdf/png"
                                   id="fileUser"
                                 />
-                                {/*     <div className="file-select" id="src-file1">
-                                  <input
-                                    type="file"
-                                    borderColor="teal"
-                                    name="userFile"
-                                    onChange={(e) => handleChangeFile(e)}
-                                    accept="pdf/png"
-                                    id="fileUser"
-                                  />
-                                </div> */}
                               </Box>
                               {fileUser ? (
                                 <Button
